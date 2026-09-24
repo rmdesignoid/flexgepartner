@@ -52,3 +52,6 @@ yarn-error.log*
 /.github-export/
 /output/
 /tmp_*/
+
+/.output/
+/.nitro/

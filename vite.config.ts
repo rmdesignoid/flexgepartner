@@ -1,3 +1,5 @@
+import tailwindcss from "@tailwindcss/postcss";
+import { fileURLToPath } from "node:url";
 import vinext from "vinext";
 import { defineConfig } from "vite";
 import hostingConfig from "./.openai/hosting.json";
@@ -34,6 +36,14 @@ const localBindingConfig = {
 };
 
 export default defineConfig(async () => {
+  if (process.env.VERCEL === "1" || process.env.NITRO_PRESET) {
+    const { nitro } = await import("nitro/vite");
+    return {
+      css: { postcss: { plugins: [tailwindcss()] } },
+      resolve: { alias: { "tailwindcss": fileURLToPath(new URL("./node_modules/tailwindcss/index.css", import.meta.url)), "cloudflare:workers": fileURLToPath(new URL("./db/vercel-bindings.ts", import.meta.url)) } },
+      plugins: [vinext(), nitro({ preset: process.env.NITRO_PRESET || "vercel" })],
+    };
+  }
   // Keep Wrangler and Miniflare state project-local. These are non-secret tool
   // settings; application environment belongs in ignored `.env*` files.
   process.env.WRANGLER_WRITE_LOGS ??= "false";
