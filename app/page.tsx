@@ -28,6 +28,7 @@ import {
   Maximize2,
   FileBadge2,
   FileText,
+  Filter,
   ListFilter,
   Flag,
   Folder,
