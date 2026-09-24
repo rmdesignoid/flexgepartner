@@ -17,6 +17,9 @@
 .ai-teacher--list>.ai-topline,.ai-teacher--list>.ai-dashboard-kpis,.ai-teacher--list>.ai-studio-filters{flex:0 0 auto}
 .ai-teacher--list>.ai-practice-table{flex:0 0 auto;min-height:0;overflow:visible}
 .ai-teacher--list .ai-practice-table__header{position:static}
+.ai-notice{position:fixed;top:16px;right:16px;left:auto;z-index:10000;width:max-content;max-width:calc(100vw - 32px);margin:0;box-shadow:0 12px 32px #14233824;animation:ai-notice-enter .18s ease-out both}
+@keyframes ai-notice-enter{from{opacity:0;transform:translateY(-6px)}to{opacity:1;transform:translateY(0)}}
+@media(max-width:680px){.ai-notice{top:12px;right:12px;max-width:calc(100vw - 24px)}}
 .ai-topline{flex-shrink:0;max-width:none;min-height:68px;margin:0;padding:12px 24px;align-items:center;border-bottom:1px solid var(--ai-line);background:var(--ai-soft)}
 .ai-header-context{min-width:0;flex:1}
 .ai-breadcrumb{display:flex;align-items:center;flex-wrap:wrap;gap:8px}

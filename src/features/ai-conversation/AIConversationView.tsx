@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useMemo, useRef, useState } from "react";
+import { createPortal } from "react-dom";
 import { ArrowRight, ArrowUpRight, BookOpen, ChevronDown, ChevronRight, ClipboardList, Mic2, Pencil, Plus, Search, Trash2, Users, X, Activity, CircleCheck, Clock3, UserRoundCheck, Smartphone, ImagePlus, XCircle } from "lucide-react";
 import { Badge, Button, EmptyState, FormField, Input, Select, Textarea } from "../../design-system";
 import { GROUPS, INITIAL_STATE, responseTime, readState, saveState, STORAGE_KEY, type Attempt, type ConversationState, type Practice } from "./types";
@@ -170,7 +171,8 @@ export function AIConversationView() {
   const trialPractice = selectedPractice;
   const trialUrl = trialPractice ? `/conversation/preview?practiceId=${encodeURIComponent(trialPractice.id)}` : "#";
 
-  return <div className={`ai-teacher ai-teacher--${stage}`}>
+  return <>
+  <div className={`ai-teacher ai-teacher--${stage}`}>
     <header className="ai-topline">
       <div className="ai-header-context">
         <ConversationBreadcrumb current={pageTitle} items={[
@@ -193,7 +195,6 @@ export function AIConversationView() {
       </div>
     </header>
 
-    {notice ? <div className="ai-notice" role="status">{notice}{deleted && notice === "Practice deleted" ? <button type="button" onClick={undoDelete}>Undo</button> : null}<button type="button" aria-label="Dismiss" onClick={() => setNotice("")}><X size={14} /></button></div> : null}
 
     {stage === "list" ? <>
       <section className="ai-dashboard-kpis" aria-label="Current assignment KPIs">
@@ -249,7 +250,9 @@ export function AIConversationView() {
     {stage === "result" && selectedAttempt ? <OralReport key={selectedAttempt.id} practice={selectedPractice} submission={selectedAttempt} onReturn={() => setStage("details")} onUpdate={(submission) => commit({ ...state, attempts: state.attempts.map((item) => item.id === submission.id ? submission : item) })} /> : null}
     {confirmation ? <ConfirmDialog title={confirmation.title} message={confirmation.message} onCancel={() => setConfirmation(null)} onConfirm={() => { confirmation.action(); setConfirmation(null); }} /> : null}
     {deleteOpen ? <DeletePracticeDialog title={selectedPractice.title} onCancel={() => setDeleteOpen(false)} onConfirm={deletePractice} /> : null}
-  </div>;
+  </div>
+  {notice ? createPortal(<div className="ai-notice" role="status" aria-live="polite">{notice}{deleted && notice === "Practice deleted" ? <button type="button" onClick={undoDelete}>Undo</button> : null}<button type="button" aria-label="Dismiss" onClick={() => setNotice("")}><X size={14} /></button></div>, document.body) : null}
+  </>;
 }
 
 function DeletePracticeDialog({ title, onCancel, onConfirm }: { title: string; onCancel: () => void; onConfirm: () => void }) {
