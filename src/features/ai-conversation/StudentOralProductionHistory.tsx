@@ -115,14 +115,11 @@ function PerformanceTimeline({ state, student }: { state: ConversationState; stu
     if (b.timestamp === null) return -1;
     return a.timestamp - b.timestamp;
   });
-  const datedEvents = events.filter((event) => event.timestamp !== null);
-  const undatedEvents = events.filter((event) => event.timestamp === null);
   return <section className="student-history-timeline" aria-labelledby="student-history-timeline-title">
     <header className="student-history-timeline__header"><div><span className="student-history-eyebrow">Learning timeline</span><h3 id="student-history-timeline-title">Oral Production activity</h3></div><span>{events.length} {events.length === 1 ? "activity" : "activities"}</span></header>
     {!events.length ? <div className="student-history-timeline__empty">No assigned or completed Oral Production activities yet.</div> : <>
       <p className="student-history-timeline__legend"><span><i className="is-complete" />Submitted report</span><span><i className="is-pending" />Not completed</span></p>
-      <div className="student-history-timeline__scroll"><ol className="student-history-timeline__track" aria-label="Oral Production activities in chronological order">{datedEvents.map((event) => <TimelineCard event={event} key={event.id} student={student} />)}</ol></div>
-      {undatedEvents.length ? <section className="student-history-timeline__undated" aria-label="Assigned activities without a scheduled date"><h4>Assigned · date not set</h4><div>{undatedEvents.map((event) => <TimelineCard event={event} key={event.id} student={student} />)}</div></section> : null}
+      <div className="student-history-timeline__scroll"><ol className="student-history-timeline__track" aria-label="Oral Production activities in chronological order, with activities without a date at the end">{events.map((event) => <TimelineCard event={event} key={event.id} student={student} />)}</ol></div>
     </>}
   </section>;
 }
@@ -132,7 +129,9 @@ function TimelineCard({ event, student }: { event: TimelineEvent; student: strin
   const attempt = event.attempt;
   const completed = event.completed && !!attempt;
   const transcriptWords = attempt?.transcript.filter((line) => line.speaker === "Student").flatMap((line) => line.text.toLocaleLowerCase().match(/[\p{L}\p{N}]+(?:['’][\p{L}\p{N}]+)*/gu) ?? []) ?? [];
-  const uniqueWords = attempt?.evaluation?.uniqueWordCount ?? (transcriptWords.length ? new Set(transcriptWords).size : null);
+  const uniqueWords = attempt?.evaluation?.uniqueWordCount ?? attempt?.demoMetrics?.uniqueWordCount ?? (transcriptWords.length ? new Set(transcriptWords).size : null);
+  const errorCount = attempt?.evaluation?.errorCount ?? attempt?.demoMetrics?.errorCount;
+  const spokenCefrLevel = attempt?.evaluation?.spokenCefrLevel ?? attempt?.demoMetrics?.spokenCefrLevel;
   const reportUrl = completed && attempt ? `/students/oral-production?student=${encodeURIComponent(student)}&attemptId=${encodeURIComponent(attempt.id)}` : undefined;
   const body = <>
     <span className="student-history-timeline__date">{dateLabel}</span>
@@ -140,7 +139,7 @@ function TimelineCard({ event, student }: { event: TimelineEvent; student: strin
     <span className="student-history-timeline__bubble">
       <span className="student-history-timeline__status">{completed ? "Submitted" : "Not completed"}</span>
       <strong>{event.practice.title}</strong>
-      <span className="student-history-timeline__metrics"><span>Unique words <b>{completed ? uniqueWords ?? "Not analyzed" : "—"}</b></span><span>Errors <b>{completed ? attempt?.evaluation?.errorCount ?? "Not analyzed" : "—"}</b></span><span>Spoken CEFR <b>{completed ? attempt?.evaluation?.spokenCefrLevel ?? "Not analyzed" : "—"}</b></span></span>
+      <span className="student-history-timeline__metrics"><span>Unique words <b>{completed ? uniqueWords ?? "Not analyzed" : "—"}</b></span><span>Errors <b>{completed ? errorCount ?? "Not analyzed" : "—"}</b></span><span>Spoken CEFR <b>{completed ? spokenCefrLevel ?? "Not analyzed" : "—"}</b></span></span>
     </span>
   </>;
   return <li className={`student-history-timeline__event${completed ? " is-complete" : " is-pending"}`}>

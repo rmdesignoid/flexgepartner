@@ -3,12 +3,13 @@ import type { Attempt, Practice } from "./types";
 export const EXAMPLE_PACK_VERSION = 2;
 type ExampleScenario = {
   slug: string; assetSlug?: string; title: string; level: string; student: string; duration: string; completedAt: string; createdAt?: string; scores: number[];
+  metrics: { uniqueWordCount: number; errorCount: number; spokenCefrLevel: string };
   themes: string[]; grammar: string[]; instructions: string; summary: string; how: string[]; strengths: string[]; areas: string[];
   evidence: string[]; growth: string; goal: string; repeated: string[]; cognates: string[]; comment: string;
 };
 const scenarios: ExampleScenario[] = [
   {
-    slug: "restaurant", title: "Dinner at a neighborhood restaurant", level: "A2", student: "Anna Johnson", duration: "1:06", scores: [86, 83, 88, 95, 88],
+    slug: "restaurant", title: "Dinner at a neighborhood restaurant", level: "A2", student: "Anna Johnson", duration: "1:06", scores: [86, 83, 88, 95, 88], metrics: { uniqueWordCount: 42, errorCount: 4, spokenCefrLevel: "B1" },
     themes: ["Food", "Everyday English"], grammar: ["Polite requests", "Question formation"],
     instructions: "Imagine you are at the restaurant in the picture. Order a meal and a drink, explain a dietary restriction, ask about dessert and request the bill. Use polite questions.",
     summary: "Anna completes a restaurant visit from requesting a table to paying the bill. Her response includes specific food choices, a peanut allergy and a clear time constraint.",
@@ -20,7 +21,7 @@ const scenarios: ExampleScenario[] = [
     goal: "Achieved: the listener has the information needed to take the order, check the allergy and arrange payment.", repeated: ["would like", "good"], cognates: ["No false cognates in this example."], comment: "",
   },
   {
-    slug: "hotel", title: "Checking in and planning your stay", level: "B1", student: "Lucas Martins", duration: "1:08", scores: [88, 86, 90, 96, 90],
+    slug: "hotel", title: "Checking in and planning your stay", level: "B1", student: "Lucas Martins", duration: "1:08", scores: [88, 86, 90, 96, 90], metrics: { uniqueWordCount: 48, errorCount: 3, spokenCefrLevel: "B2" },
     themes: ["Travel", "Accommodation"], grammar: ["Polite requests", "Indirect questions"],
     instructions: "You have arrived at the hotel in the picture. Introduce your reservation, request a quiet room, ask about breakfast and internet access, and check the options for a late checkout.",
     summary: "Lucas explains his reservation and links practical requests to his schedule. He asks about early check-in, breakfast, Wi-Fi, a local restaurant and late checkout.",
@@ -32,7 +33,7 @@ const scenarios: ExampleScenario[] = [
     goal: "Achieved: the receptionist can locate the booking and explain the services needed for the stay.", repeated: ["could", "room"], cognates: ["No false cognates in this example."], comment: "Clear and considerate requests, Lucas. Next time, ask two related questions, pause for the answer, then move to the next topic.",
   },
   {
-    slug: "weekend", title: "My ideal weekend outdoors", level: "A1", student: "Emily Chen", duration: "1:02", scores: [76, 74, 75, 90, 65],
+    slug: "weekend", title: "My ideal weekend outdoors", level: "A1", student: "Emily Chen", duration: "1:02", scores: [76, 74, 75, 90, 65], metrics: { uniqueWordCount: 27, errorCount: 8, spokenCefrLevel: "A2" },
     themes: ["Free time", "Family"], grammar: ["Present simple", "Likes and dislikes"],
     instructions: "Look at the picnic in the picture. Describe your ideal weekend: where you go, who you spend time with, what you do and why you enjoy it. Include one plan for next weekend.",
     summary: "Emily describes a family picnic, games, cooking and time at home. The response stays on topic and includes a future plan, with a useful opportunity to practice third-person verbs.",
@@ -44,7 +45,7 @@ const scenarios: ExampleScenario[] = [
     goal: "Achieved: the listener can picture the weekend and understand why these activities matter to Emily.", repeated: ["like", "park", "family"], cognates: ["No false cognates in this example."], comment: "",
   },
   {
-    slug: "interview", title: "A new role in project coordination", level: "B2", student: "Daniel Costa", duration: "1:15", scores: [90, 88, 82, 96, 94],
+    slug: "interview", title: "A new role in project coordination", level: "B2", student: "Daniel Costa", duration: "1:15", scores: [90, 88, 82, 96, 94], metrics: { uniqueWordCount: 56, errorCount: 5, spokenCefrLevel: "B2" },
     themes: ["Work", "Career"], grammar: ["Present perfect", "Past simple"],
     instructions: "Imagine you are the candidate in the picture. Introduce your experience, describe a measurable achievement, explain a strength and an area for development, and ask the interviewer one question.",
     summary: "Daniel connects customer support experience to project coordination through a concrete achievement. He reflects on delegation and asks how success is measured. One false cognate changes the intended meaning.",
@@ -58,7 +59,7 @@ const scenarios: ExampleScenario[] = [
 ];
 const annaEvolutionScenarios: ExampleScenario[] = [
   {
-    slug: "anna-weekend-v2", assetSlug: "weekend", title: "Describe a weekend outdoors", level: "A1", student: "Anna Johnson", completedAt: "2026-09-02T12:00:00.000Z", createdAt: "Sep 02, 2026", duration: "0:48", scores: [59, 57, 61, 67, 58],
+    slug: "anna-weekend-v2", assetSlug: "weekend", title: "Describe a weekend outdoors", level: "A1", student: "Anna Johnson", completedAt: "2026-09-02T12:00:00.000Z", createdAt: "Sep 02, 2026", duration: "0:48", scores: [59, 57, 61, 67, 58], metrics: { uniqueWordCount: 17, errorCount: 14, spokenCefrLevel: "A1" },
     themes: ["Free time", "Family"], grammar: ["Present simple", "Likes and dislikes"],
     instructions: "Describe a weekend outdoors: say where you go, who joins you and which activities you enjoy. Give one reason for your favorite activity.",
     summary: "Anna shares a clear picture of a family weekend and names several activities. Short phrases and repeated words make the message understandable, with room to connect ideas and add detail.",
@@ -70,7 +71,7 @@ const annaEvolutionScenarios: ExampleScenario[] = [
     goal: "Partly achieved: the listener understands the basic weekend plan and who took part.", repeated: ["like", "park"], cognates: ["No false cognates identified in this example."], comment: "Good first description, Anna. Keep the same clear topic and connect your ideas with ‘then’ and ‘because’.",
   },
   {
-    slug: "anna-hotel-v2", assetSlug: "hotel", title: "Check in and ask about hotel services", level: "A2", student: "Anna Johnson", completedAt: "2026-09-06T12:00:00.000Z", createdAt: "Sep 06, 2026", duration: "0:57", scores: [65, 63, 67, 70, 62],
+    slug: "anna-hotel-v2", assetSlug: "hotel", title: "Check in and ask about hotel services", level: "A2", student: "Anna Johnson", completedAt: "2026-09-06T12:00:00.000Z", createdAt: "Sep 06, 2026", duration: "0:57", scores: [65, 63, 67, 70, 62], metrics: { uniqueWordCount: 21, errorCount: 12, spokenCefrLevel: "A1" },
     themes: ["Travel", "Accommodation"], grammar: ["Polite requests", "Question formation"],
     instructions: "Check in at the hotel, confirm your booking and ask about breakfast and Wi-Fi. Explain one preference for your room.",
     summary: "Anna confirms the reservation and asks about breakfast and internet access. Her requests are understandable, and she is beginning to link them to a personal need.",
@@ -82,7 +83,7 @@ const annaEvolutionScenarios: ExampleScenario[] = [
     goal: "Achieved: the receptionist can find the booking and understand the room preference.", repeated: ["I want", "room"], cognates: ["No false cognates identified in this example."], comment: "Your requests now include useful details. Try ‘Could I have a quiet room?’ to make them sound more natural.",
   },
   {
-    slug: "anna-restaurant-v2", assetSlug: "restaurant", title: "Order a meal and explain a food allergy", level: "A2", student: "Anna Johnson", completedAt: "2026-09-10T12:00:00.000Z", createdAt: "Sep 10, 2026", duration: "1:02", scores: [68, 70, 72, 77, 68],
+    slug: "anna-restaurant-v2", assetSlug: "restaurant", title: "Order a meal and explain a food allergy", level: "A2", student: "Anna Johnson", completedAt: "2026-09-10T12:00:00.000Z", createdAt: "Sep 10, 2026", duration: "1:02", scores: [68, 70, 72, 77, 68], metrics: { uniqueWordCount: 26, errorCount: 10, spokenCefrLevel: "A2" },
     themes: ["Food", "Everyday English"], grammar: ["Polite requests", "Question formation"],
     instructions: "Order a meal and drink, explain a food allergy and ask whether a dish is safe. Finish by asking for the bill.",
     summary: "Anna handles the main stages of a restaurant visit and makes the allergy clear. She asks a useful follow-up question and is starting to vary her polite requests.",
@@ -94,7 +95,7 @@ const annaEvolutionScenarios: ExampleScenario[] = [
     goal: "Achieved: the server can take the order and understand the allergy requirement.", repeated: ["I'd like", "good"], cognates: ["No false cognates identified in this example."], comment: "You made the allergy easy to understand. Keep adding a reason to your questions so the server knows what to check.",
   },
   {
-    slug: "anna-project-v2", assetSlug: "interview", title: "Explain a project you completed", level: "B1", student: "Anna Johnson", completedAt: "2026-09-14T12:00:00.000Z", createdAt: "Sep 14, 2026", duration: "1:04", scores: [73, 75, 70, 82, 75],
+    slug: "anna-project-v2", assetSlug: "interview", title: "Explain a project you completed", level: "B1", student: "Anna Johnson", completedAt: "2026-09-14T12:00:00.000Z", createdAt: "Sep 14, 2026", duration: "1:04", scores: [73, 75, 70, 82, 75], metrics: { uniqueWordCount: 31, errorCount: 8, spokenCefrLevel: "A2" },
     themes: ["Work", "Career"], grammar: ["Past simple", "Sequencing language"],
     instructions: "Describe a project you completed: explain the goal, your role, one challenge and the result. Say what you learned from the experience.",
     summary: "Anna gives the project a clear beginning and outcome, with a specific example of her contribution. A few transitions are missing, so the challenge and result could connect more smoothly.",
@@ -106,7 +107,7 @@ const annaEvolutionScenarios: ExampleScenario[] = [
     goal: "Achieved: the listener can understand Anna's contribution and the project's outcome.", repeated: ["we", "then"], cognates: ["No false cognates identified in this example."], comment: "The example makes your contribution clear. Add a transition before the result to make the story easier to follow.",
   },
   {
-    slug: "anna-hotel-followup-v2", assetSlug: "hotel", title: "Handle a follow-up request at the hotel", level: "B1", student: "Anna Johnson", completedAt: "2026-09-17T12:00:00.000Z", createdAt: "Sep 17, 2026", duration: "1:11", scores: [80, 78, 82, 86, 79],
+    slug: "anna-hotel-followup-v2", assetSlug: "hotel", title: "Handle a follow-up request at the hotel", level: "B1", student: "Anna Johnson", completedAt: "2026-09-17T12:00:00.000Z", createdAt: "Sep 17, 2026", duration: "1:11", scores: [80, 78, 82, 86, 79], metrics: { uniqueWordCount: 36, errorCount: 6, spokenCefrLevel: "B1" },
     themes: ["Travel", "Problem solving"], grammar: ["Indirect questions", "Conditionals"],
     instructions: "Your room is noisy and you have an early tour. Explain the problem, ask about another room and confirm what can be arranged if none is available.",
     summary: "Anna explains the problem calmly, gives the reason for needing help and checks two possible solutions. Her questions are more complete, with a small opportunity to make the conditional option more precise.",
@@ -132,6 +133,7 @@ export const EXAMPLE_ATTEMPTS: Attempt[] = exampleScenarios.map((s) => ({
   id: `example-response-${s.slug}-v1`, practiceId: `example-oral-${s.slug}-v1`, student: s.student,
   completedAt: s.completedAt ?? "2026-09-24T12:00:00.000Z", duration: s.duration, completed: true, transcript: [],
   audioUrl: `/oral-production/examples/${s.assetSlug ?? s.slug}.wav`, syntheticAudio: true,
+  demoMetrics: s.metrics,
   reviewStatus: s.comment ? "Completed" : "Pending", teacherComment: s.comment,
   evaluation: { mode: "simulated", overall: Math.round(s.scores.reduce((a, b) => a + b, 0) / 5),
     dimensions: labels.map((label, i) => ({ label, score: s.scores[i], evidence: s.evidence[i] })),

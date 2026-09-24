@@ -45,6 +45,8 @@ export type Attempt = {
   audioId?: string;
   audioUrl?: string;
   syntheticAudio?: boolean;
+  /** Illustrative analytics for seeded examples; never used for real recordings. */
+  demoMetrics?: { uniqueWordCount: number; errorCount: number; spokenCefrLevel: string };
   reviewStatus?: "Pending" | "Completed";
   teacherComment?: string;
   teacherCorrections?: Array<{ label: string; score: number; evidence?: string }>;
@@ -116,6 +118,7 @@ export const INITIAL_STATE: ConversationState = {
     ...EXAMPLE_ATTEMPTS,
     {
       id: "attempt-anna-1", practiceId: "practice-restaurant", student: "Anna Johnson", completedAt: "Sep 20, 2026", duration: "3:42",
+      demoMetrics: { uniqueWordCount: 18, errorCount: 9, spokenCefrLevel: "A2" },
       evaluation: { ...sampleEvaluation(), overall: 82 },
       transcript: [
         { speaker: "AI", text: "Hi! Welcome to The Daily Dish. Are you ready to order?" },
@@ -128,11 +131,11 @@ export const INITIAL_STATE: ConversationState = {
         { speaker: "Student", text: "No, thank you. What do you recommend for dessert?" },
       ],
     },
-    { id: "attempt-anna-0", practiceId: "practice-restaurant", student: "Anna Johnson", completedAt: "Sep 18, 2026", duration: "3:18", improved: "Asked a complete question in the latest attempt.", transcript: [] },
+    { id: "attempt-anna-0", practiceId: "practice-restaurant", student: "Anna Johnson", completedAt: "Sep 18, 2026", duration: "3:18", improved: "Asked a complete question in the latest attempt.", demoMetrics: { uniqueWordCount: 16, errorCount: 11, spokenCefrLevel: "A2" }, transcript: [] },
     { id: "attempt-lucas-1", practiceId: "practice-restaurant", student: "Lucas Martins", completedAt: "Sep 19, 2026", duration: "3:56", improved: "Asked for a recommendation using a complete question.", transcript: [] },
     { id: "attempt-directions-1", practiceId: "practice-directions", student: "Emily Chen", completedAt: "Sep 19, 2026", duration: "4:05", transcript: [] },
     { id: "attempt-directions-2", practiceId: "practice-directions", student: "Daniel Costa", completedAt: "Sep 19, 2026", duration: "3:51", transcript: [] },
-    { id: "attempt-directions-3", practiceId: "practice-directions", student: "Anna Johnson", completedAt: "Sep 20, 2026", duration: "3:37", transcript: [] },
+    { id: "attempt-directions-3", practiceId: "practice-directions", student: "Anna Johnson", completedAt: "Sep 20, 2026", duration: "3:37", demoMetrics: { uniqueWordCount: 23, errorCount: 10, spokenCefrLevel: "A1" }, transcript: [] },
   ],
 };
 

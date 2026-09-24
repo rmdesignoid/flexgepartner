@@ -95,6 +95,17 @@ test("Anna's sample history shows varied scores across dated practices", () => {
   assert.deepEqual(dates, [...dates].sort());
 });
 
+test("Anna's submitted sample practices have illustrative timeline KPIs", () => {
+  const attempts = model().INITIAL_STATE.attempts.filter((attempt) => attempt.student === "Anna Johnson" && attempt.completed !== false);
+  assert.ok(attempts.length > 0);
+  for (const attempt of attempts) {
+    assert.ok(attempt.demoMetrics, `${attempt.id} should include illustrative metrics`);
+    assert.ok(attempt.demoMetrics.uniqueWordCount > 0);
+    assert.ok(attempt.demoMetrics.errorCount >= 0);
+    assert.match(attempt.demoMetrics.spokenCefrLevel, /^[ABC][12]$/);
+  }
+});
+
 test("read-only student preview never persists migrations", () => {
   const api = model({ samplePackVersion: 0, practices: [], attempts: [] });
   const snapshot = api.readState({ persistMigration: false });
