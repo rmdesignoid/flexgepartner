@@ -2903,7 +2903,7 @@ export default function Home() {
   return (
     <>
       <DesktopOnly />
-      <main className={`planner-shell ${sidebarCollapsed ? "is-sidebar-collapsed" : ""} ${planningSelection && planningSelection.source !== "report" ? "is-planning" : ""} ${darkMode ? "theme-dark" : ""}`}>
+      <main className={`planner-shell ${sidebarCollapsed ? "is-sidebar-collapsed" : ""} ${activeModule === "aiConversation" ? "is-ai-studio" : ""} ${planningSelection && planningSelection.source !== "report" ? "is-planning" : ""} ${darkMode ? "theme-dark" : ""}`}>
         <aside className={`sidebar ${sidebarCollapsed ? "is-collapsed" : ""}`}>
           <div className="sidebar__main">
             <div className="brand-row">
