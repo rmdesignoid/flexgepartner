@@ -152,6 +152,8 @@ type StudentRecord = {
   weeklyGoal: string;
   lastSeen: string;
   attendance: ("present" | "absent")[];
+  oralProductionReports?: number;
+  lastOralProductionActivity?: string;
 };
 
 type GrammarPerformance = {
@@ -760,6 +762,7 @@ const initialStudents: StudentRecord[] = [
   { id: 2, name: "Student 1", email: "1@student.com", status: "Enabled", level: "A2+", progress: 0, studyTime: "00:00 hr", weeklyGoal: "00:00 hr / 01 hr", lastSeen: "4 hours ago", attendance: ["absent", "absent", "absent", "absent"] },
   { id: 3, name: "Student 2", email: "2@student.com", status: "Enabled", level: "A1", progress: 8, studyTime: "01 min", weeklyGoal: "00:00 hr / 01 hr", lastSeen: "a month ago", attendance: ["present", "present", "absent", "present"] },
   { id: 4, name: "Teste Desabilitar", email: "testedeshabilitar@flexge.com", status: "Disabled", level: "A1", progress: 0, studyTime: "00:00 hr", weeklyGoal: "00:00 hr / 01 hr", lastSeen: "-", attendance: ["absent", "absent", "absent", "absent"] },
+  { id: 5, name: "Anna Johnson", email: "anna.johnson@example.com", status: "Enabled", level: "A2", progress: 100, studyTime: "09:43 min", weeklyGoal: "04 reports / 04", lastSeen: "Sep 24, 2026", attendance: ["present", "present", "present", "present"], oralProductionReports: 4, lastOralProductionActivity: "Sep 24, 2026" },
 ];
 const resourceTagOptions = ["Flashcards", "Classroom", "Lesson material", "Speaking", "Activity", "Pair work", "Game", "Warm-up", "Worksheet", "Grammar"];
 const hours = Array.from({ length: 24 }, (_, index) => index);
@@ -827,6 +830,7 @@ function formatHourLabel(hour: number) {
 }
 
 const studentAvatarImages: Record<string, string> = {
+  "Anna Johnson": "/student-avatars/anna-johnson-demo.png",
   "Ana Martins": "/avatar-photo.png",
   "Gabriel Santos": "/avatar-photo-gabriel.png",
   "Lucas Almeida": "/avatar-photo-gabriel.png",
@@ -2123,17 +2127,16 @@ function StudentsView() {
       </div>
       <div className="students-table-wrap">
         <div className="students-table-scroll">
-        <table className="students-table">
-          <thead><tr><th scope="col" className="students-table__check"><input type="checkbox" aria-label="Select all students" /></th><th scope="col">Student <ChevronDown size={13} /></th><th scope="col">Course <ChevronDown size={13} /></th><th scope="col">Weekly goal <ChevronDown size={13} /></th><th scope="col">Last seen <ChevronDown size={13} /></th><th scope="col">Actions</th></tr></thead>
+        <table className="students-table students-table--oral-history">
+          <thead><tr><th scope="col">Student</th><th scope="col">Level</th><th scope="col">Oral Production</th><th scope="col">Last activity</th><th scope="col">Actions</th></tr></thead>
           <tbody>
             {students.map((student) => (
               <tr key={student.id} className={student.status === "Disabled" ? "is-disabled" : ""}>
-                <td className="students-table__check"><input type="checkbox" aria-label={`Select ${student.name}`} /></td>
-                 <td><div className="student-cell"><StudentAvatar name={student.name} className={`student-avatar student-avatar--${student.id}`} /><div><div className="student-name-row"><a className="student-name-button" href={`/students/oral-production?student=${encodeURIComponent(student.name)}&email=${encodeURIComponent(student.email)}`} target="_blank" rel="noopener noreferrer">{student.name}</a><span className={`student-status student-status--${student.status.toLowerCase()}`}>{student.status}</span></div><small>{student.email}</small></div></div></td>
-                <td><div className="course-cell"><span className="course-badge">{student.level}</span><div><small>Progress</small><span>{student.progress}% <b>|</b> {student.studyTime}</span></div></div></td>
-                <td><div className="goal-cell"><span>{student.weeklyGoal}</span><div className="goal-bar"><i style={{ width: `${Math.min(student.progress, 100)}%` }} /></div><div className="attendance-row" aria-label="Last four weeks attendance">{student.attendance.map((value, index) => <span key={index} className={`attendance-dot attendance-dot--${value}`} title={value === "present" ? "Present" : "Absent"}>{value === "present" ? "✓" : "×"}</span>)}</div><small>Last 4 weeks</small></div></td>
-                <td className="last-seen">{student.lastSeen}</td>
-                <td><button className="student-actions-button" type="button" aria-label={`Actions for ${student.name}`}>Actions<ChevronDown size={14} /></button></td>
+                <td><div className="student-cell"><StudentAvatar name={student.name} className={`student-avatar student-avatar--${student.id}`} /><div><div className="student-name-row"><strong className="student-name-button">{student.name}</strong><span className={`student-status student-status--${student.status.toLowerCase()}`}>{student.status}</span></div><small>{student.email}</small></div></div></td>
+                <td><span className="course-badge">{student.level}</span></td>
+                <td>{student.oralProductionReports ? `${student.oralProductionReports} completed` : "No reports"}</td>
+                <td className="last-seen">{student.lastOralProductionActivity ?? "—"}</td>
+                <td><a className="outline-button student-profile-action" href={`/students/oral-production?student=${encodeURIComponent(student.name)}&email=${encodeURIComponent(student.email)}&from=students`}>View profile<ChevronRight size={14} /></a></td>
               </tr>
             ))}
           </tbody>

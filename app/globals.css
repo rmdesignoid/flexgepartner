@@ -1746,6 +1746,7 @@ body.theme-dark {
 .student-name-row a, .student-name-button { overflow: hidden; color: var(--primary); font-size: var(--ds-font-size-sm); line-height: var(--ds-line-height-sm); font-weight: var(--ds-font-weight-medium); text-overflow: ellipsis; white-space: nowrap; }
 .student-name-button { display: inline-block; padding: 0; border: 0; background: transparent; font: inherit; text-decoration: none; cursor: pointer; }
 .student-name-button:hover { text-decoration: underline; }
+.student-profile-action { min-height: 32px; display: inline-flex; align-items: center; gap: 6px; white-space: nowrap; text-decoration: none; }
 .student-cell small, .course-cell small, .goal-cell small { display: block; color: var(--muted); font-size: var(--ds-font-size-xs); font-weight: var(--ds-font-weight-normal); line-height: var(--ds-line-height-xs); }
 .students-screen .student-avatar { display: inline-flex; width: 32px; height: 32px; flex: 0 0 32px; align-items: center; justify-content: center; border-radius: 50%; color: var(--primary); background: var(--primary-soft); }
 .students-screen .student-avatar--3 { color: #fff; background: #245b3f; font-size: var(--ds-font-size-base); line-height: var(--ds-line-height-base); font-weight: var(--ds-font-weight-semibold); }
