@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import { ArrowLeft, Check, CircleCheck, ClipboardCheck, Pencil, Send, Star, Target, X } from "lucide-react";
+import { ArrowLeft, Check, CircleCheck, ClipboardCheck, ExternalLink, Pencil, Send, Star, Target, UserRound, X } from "lucide-react";
 import { Button, Input, Textarea } from "../../design-system";
 import type { Attempt, Practice } from "./types";
 import { SavedRecording } from "./AudioPlayer";
@@ -38,6 +38,7 @@ export function OralReport({ practice, submission, onUpdate, onReturn }: { pract
           <div className="op-report-identity__meta">
             <span>{completedDate} · Completed · {submission.duration}</span>
             <span className={`op-review-status${reviewed ? " is-complete" : ""}`}>{reviewed ? "Reviewed" : "Pending review"}</span>
+            <a className="op-profile-link" href={`/students/oral-production?student=${encodeURIComponent(submission.student)}`} target="_blank" rel="noopener noreferrer"><UserRound size={15} aria-hidden="true" />View student profile<ExternalLink size={13} aria-hidden="true" /></a>
           </div>
         </div>
       </div>

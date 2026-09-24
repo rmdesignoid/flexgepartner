@@ -1744,7 +1744,7 @@ body.theme-dark {
 .student-cell > div { min-width: 0; }
 .student-name-row { gap: 8px; min-width: 0; }
 .student-name-row a, .student-name-button { overflow: hidden; color: var(--primary); font-size: var(--ds-font-size-sm); line-height: var(--ds-line-height-sm); font-weight: var(--ds-font-weight-medium); text-overflow: ellipsis; white-space: nowrap; }
-.student-name-button { padding: 0; border: 0; background: transparent; font: inherit; cursor: pointer; }
+.student-name-button { display: inline-block; padding: 0; border: 0; background: transparent; font: inherit; text-decoration: none; cursor: pointer; }
 .student-name-button:hover { text-decoration: underline; }
 .student-cell small, .course-cell small, .goal-cell small { display: block; color: var(--muted); font-size: var(--ds-font-size-xs); font-weight: var(--ds-font-weight-normal); line-height: var(--ds-line-height-xs); }
 .students-screen .student-avatar { display: inline-flex; width: 32px; height: 32px; flex: 0 0 32px; align-items: center; justify-content: center; border-radius: 50%; color: var(--primary); background: var(--primary-soft); }
