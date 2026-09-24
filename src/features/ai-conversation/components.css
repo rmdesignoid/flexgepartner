@@ -60,7 +60,9 @@
 :is(.ai-teacher, .ai-test-page) .ds-field { gap: 8px; }
 :is(.ai-teacher, .ai-test-page) .ds-field__label { font-size: var(--conversation-text); line-height: var(--conversation-leading); font-weight: 500; }
 :is(.ai-teacher, .ai-test-page) :is(.ds-field__hint, .ds-field__error) { font-size: var(--conversation-caption); line-height: var(--conversation-caption-leading); }
-:is(.ai-teacher, .ai-test-page) :is(button, a, input, textarea, select):focus-visible { outline: 2px solid var(--ai-primary); outline-offset: 2px; box-shadow: none; }
+:is(.ai-teacher, .ai-test-page) :is(button, a, input, textarea, select):focus-visible { outline: 0; outline-offset: 0; box-shadow: var(--ds-focus-ring); }
+:is(.ai-teacher, .ai-test-page) :is(input, textarea, select):focus-visible { border-color: var(--ds-primary); }
+:is(.ai-teacher, .ai-test-page) :is(input, textarea, select)[aria-invalid="true"]:focus-visible { border-color: var(--ds-danger); box-shadow: var(--ds-error-ring); }
 
 /* Tables: clear primary content, consistent metadata, restrained badges. */
 .ai-teacher :is(.ai-practice-table__header, .ai-student-table__header) { font-size: var(--conversation-caption); line-height: var(--conversation-caption-leading); font-weight: 500; background: var(--ai-soft); }

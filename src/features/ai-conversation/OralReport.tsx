@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import { ArrowLeft, Check, Pencil, Send, Star, X } from "lucide-react";
+import { ArrowLeft, Check, CircleCheck, ClipboardCheck, Pencil, Send, Star, Target, X } from "lucide-react";
 import { Button, Input, Textarea } from "../../design-system";
 import type { Attempt, Practice } from "./types";
 import { SavedRecording } from "./AudioPlayer";
@@ -16,15 +16,40 @@ export function OralReport({ practice, submission, onUpdate, onReturn }: { pract
   const reviewed = submission.reviewStatus === "Completed";
   const date = new Date(submission.completedAt);
   const completedDate = Number.isNaN(date.getTime()) ? submission.completedAt : date.toLocaleDateString("en-GB");
+  const studentPhoto = evaluation?.mode === "simulated" && submission.student === "Anna Johnson"
+    ? "/student-avatars/anna-johnson-demo.png"
+    : undefined;
+  const studentInitials = submission.student.split(/\s+/).map((part) => part[0]).slice(0, 2).join("").toUpperCase();
+  const highlights = [
+    { title: "How you did", items: evaluation?.howYouDid, Icon: ClipboardCheck, tone: "effort" },
+    { title: "What you did well", items: evaluation?.strengths, Icon: CircleCheck, tone: "strength" },
+    { title: "Areas for improvement", items: evaluation?.growthAreas, Icon: Target, tone: "growth" },
+  ];
   return <section className="ai-result-view op-report">
-    <div className="ai-result-hero"><div><span className="ai-step-label">{practice.title}</span><h2>Oral production</h2><p>{submission.student} · {practice.level}</p><p>{completedDate} · Completed · {submission.duration}</p><p>Review status: <span className={`op-review-status${reviewed ? " is-complete" : ""}`}>{reviewed ? "Completed" : "Pending"}</span></p></div><div className="ai-result-score"><strong>{evaluation?.overall ?? "—"}</strong><span>{evaluation ? "out of 100" : "not scored"}</span></div></div>
-    {evaluation?.mode === "simulated" ? <span className="ai-report-simulated">{submission.syntheticAudio ? "Example report · synthetic audio and illustrative scores" : "Demonstration feedback · not an assessment of a recording"}</span> : null}
-    <section className="ai-report-section"><h3>Summary</h3><p>{evaluation?.summary ?? "The recording has been submitted for teacher review. Automatic speech analysis is not available for this response."}</p><div className="ai-report-highlights op-highlights">{[["How you did", evaluation?.howYouDid], ["What you did well", evaluation?.strengths], ["Areas for improvement", evaluation?.growthAreas]].map(([title, items]) => <section key={title as string}><h4>{title as string}</h4>{Array.isArray(items) && items.length ? <ul>{items.map((item) => <li key={item}>{item}</li>)}</ul> : <p>Analysis unavailable</p>}</section>)}</div></section>
+    <div className="ai-result-hero">
+      <div className="op-report-identity">
+        <div className="op-student-avatar" aria-hidden="true">
+          {studentPhoto ? <img src={studentPhoto} alt="" /> : <span>{studentInitials}</span>}
+        </div>
+        <div className="op-report-identity__copy">
+          <span className="ai-step-label">{practice.title}</span>
+          <h2>{submission.student}</h2>
+          <p className="op-report-identity__context"><span>Oral production</span><span>{practice.level}</span></p>
+          <div className="op-report-identity__meta">
+            <span>{completedDate} · Completed · {submission.duration}</span>
+            <span className={`op-review-status${reviewed ? " is-complete" : ""}`}>{reviewed ? "Reviewed" : "Pending review"}</span>
+          </div>
+        </div>
+      </div>
+      <div className="ai-result-score"><strong>{evaluation?.overall ?? "—"}</strong><span>{evaluation ? "out of 100" : "not scored"}</span></div>
+    </div>
+    <section className="ai-report-section"><h3>Instructions</h3>{practice.imageDataUrl ? <img className="op-report-image" src={practice.imageDataUrl} alt={`Activity visual: ${practice.title}`} /> : null}<p className="op-instructions">{practice.activityInstructions || practice.goal}</p></section>
+    <section className="ai-report-section"><h3>Summary</h3><p>{evaluation?.summary ?? "The recording has been submitted for teacher review. Automatic speech analysis is not available for this response."}</p><div className="ai-report-highlights op-highlights">{highlights.map(({ title, items, Icon, tone }) => <section className={`op-highlight-card op-highlight-card--${tone}`} key={title}><h4><span className="op-highlight-card__icon"><Icon size={16} aria-hidden="true" /></span><span>{title}</span></h4>{Array.isArray(items) && items.length ? <ul>{items.map((item) => <li key={item}>{item}</li>)}</ul> : <p>Analysis unavailable</p>}</section>)}</div></section>
     <section className="ai-report-section"><h3>Growth opportunities</h3><p>{evaluation?.growthOpportunities ?? "Available when this response has been evaluated."}</p></section>
     <div className="op-report-grid"><section className="ai-report-section"><div className="op-section-heading"><h3><Star size={17} /> Speaking skills</h3><Button variant="ghost" size="sm" disabled={!evaluation} onClick={() => setEditing(true)} aria-label="Edit speaking skills"><Pencil size={16} /></Button></div>{dimensions.length ? dimensions.map((item) => <div className="op-skill" key={item.label}><div><strong>{item.label}</strong><span>{item.score}/100</span>{submission.teacherCorrections?.some((correction) => correction.label === item.label) ? <small>Edited</small> : null}</div><progress max={100} value={item.score} aria-label={`${item.label} score`} /><p>{item.evidence}</p></div>) : <p>Skill scores are not available for this recording.</p>}</section>
     <section className="ai-report-section"><h3>Skills overview</h3>{dimensions.length ? <><button type="button" className="op-radar-button" onClick={() => setEditing(true)} aria-label="View assessment details"><RadarChart dimensions={dimensions} /></button><Button variant="ghost" onClick={() => setEditing(true)}>View details</Button></> : <p>The chart will appear when skill scores are available.</p>}</section></div>
     <section className="ai-report-section"><h3>Was the communicative goal achieved?</h3><p>{evaluation?.communicativeGoal ?? "Not evaluated yet."}</p></section>
-    <div className="op-report-grid op-response-grid"><section className="ai-report-section"><h3>Instructions</h3>{practice.imageDataUrl ? <img className="op-report-image" src={practice.imageDataUrl} alt={`Activity visual: ${practice.title}`} /> : null}<p className="op-instructions">{practice.activityInstructions || practice.goal}</p><h3>Student response</h3><SavedRecording key={submission.audioId ?? submission.id} audioId={submission.audioId} audioUrl={submission.audioUrl} duration={submission.duration.split(":").reduce((total, part) => total * 60 + (Number(part) || 0), 0)} /></section><section className="ai-report-section"><h3>Repeated words / false cognates</h3><p><strong>Repeated words:</strong> {evaluation ? evaluation.repeatedWords?.join(", ") || "—" : "Analysis unavailable"}</p><p><strong>False cognates:</strong> {evaluation ? evaluation.falseCognates?.join(", ") || "—" : "Analysis unavailable"}</p></section></div>
+    <div className="op-report-grid op-response-grid"><section className="ai-report-section"><h3>Student response</h3><SavedRecording key={submission.audioId ?? submission.id} audioId={submission.audioId} audioUrl={submission.audioUrl} duration={submission.duration.split(":").reduce((total, part) => total * 60 + (Number(part) || 0), 0)} /></section><section className="ai-report-section"><h3>Repeated words / false cognates</h3><p><strong>Repeated words:</strong> {evaluation ? evaluation.repeatedWords?.join(", ") || "—" : "Analysis unavailable"}</p><p><strong>False cognates:</strong> {evaluation ? evaluation.falseCognates?.join(", ") || "—" : "Analysis unavailable"}</p></section></div>
     <section className="ai-report-section"><h3><label htmlFor="teacher-comment">Add comments</label></h3><Textarea id="teacher-comment" value={comment} readOnly={reviewed} placeholder="Share feedback with the student…" onChange={(event) => setComment(event.target.value)} /><div className="op-comment-actions">{reviewed ? <span role="status"><Check size={16} /> Sent</span> : <Button disabled={!comment.trim()} onClick={() => onUpdate({ ...submission, teacherComment: comment.trim(), reviewStatus: "Completed" })}><Send size={15} />Send</Button>}</div></section>
     <Button variant="ghost" onClick={onReturn}><ArrowLeft size={16} />Return</Button>
     {editing && evaluation ? <CorrectionDialog original={evaluation.dimensions} values={dimensions} onCancel={() => setEditing(false)} onSave={(values) => { onUpdate({ ...submission, teacherCorrections: values.filter((value, index) => value.score !== evaluation.dimensions[index].score || value.evidence !== evaluation.dimensions[index].evidence) }); setEditing(false); }} /> : null}

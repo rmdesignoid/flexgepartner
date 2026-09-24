@@ -38,8 +38,8 @@
   --ds-shadow-lg: 0 12px 28px rgba(15, 23, 42, .14), 0 2px 6px rgba(15, 23, 42, .08);
   --ds-shadow-popover: 0 14px 32px rgba(15, 23, 42, .16), 0 2px 6px rgba(15, 23, 42, .07);
   --ds-control-height: 32px;
-  --ds-focus-ring: 0 0 0 2px color-mix(in srgb, var(--ds-primary) 18%, transparent);
-  --ds-error-ring: 0 0 0 2px color-mix(in srgb, var(--ds-danger) 18%, transparent);
+  --ds-focus-ring: 0 0 0 2px color-mix(in srgb, var(--ds-primary) 22%, transparent);
+  --ds-error-ring: 0 0 0 2px color-mix(in srgb, var(--ds-danger) 22%, transparent);
   --ds-font-sans: "Inter", ui-sans-serif, system-ui, sans-serif;
   --ds-font-size-xs: 0.75rem;
   --ds-line-height-xs: 1rem;

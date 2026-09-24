@@ -167,7 +167,7 @@ export function AIConversationView() {
         : stage === "assign" ? `Select students for “${practice?.title ?? "this practice"}”.`
         : stage === "type" ? "Choose the kind of practice you want to build."
         : "Create and manage guided speaking activities for your students.";
-  const showStudentPreview = stage === "details" || stage === "result";
+  const showStudentPreview = stage === "details";
   const trialPractice = selectedPractice;
   const trialUrl = trialPractice ? `/conversation/preview?practiceId=${encodeURIComponent(trialPractice.id)}` : "#";
 
