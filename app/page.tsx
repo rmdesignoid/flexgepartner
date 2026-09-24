@@ -762,7 +762,7 @@ const initialStudents: StudentRecord[] = [
   { id: 2, name: "Student 1", email: "1@student.com", status: "Enabled", level: "A2+", progress: 0, studyTime: "00:00 hr", weeklyGoal: "00:00 hr / 01 hr", lastSeen: "4 hours ago", attendance: ["absent", "absent", "absent", "absent"] },
   { id: 3, name: "Student 2", email: "2@student.com", status: "Enabled", level: "A1", progress: 8, studyTime: "01 min", weeklyGoal: "00:00 hr / 01 hr", lastSeen: "a month ago", attendance: ["present", "present", "absent", "present"] },
   { id: 4, name: "Teste Desabilitar", email: "testedeshabilitar@flexge.com", status: "Disabled", level: "A1", progress: 0, studyTime: "00:00 hr", weeklyGoal: "00:00 hr / 01 hr", lastSeen: "-", attendance: ["absent", "absent", "absent", "absent"] },
-  { id: 5, name: "Anna Johnson", email: "anna.johnson@example.com", status: "Enabled", level: "A2", progress: 100, studyTime: "09:43 min", weeklyGoal: "04 reports / 04", lastSeen: "Sep 24, 2026", attendance: ["present", "present", "present", "present"], oralProductionReports: 4, lastOralProductionActivity: "Sep 24, 2026" },
+  { id: 5, name: "Anna Johnson", email: "anna.johnson@example.com", status: "Enabled", level: "A2", progress: 100, studyTime: "09:43 min", weeklyGoal: "09 reports / 09", lastSeen: "Sep 24, 2026", attendance: ["present", "present", "present", "present"], oralProductionReports: 9, lastOralProductionActivity: "Sep 24, 2026" },
 ];
 const resourceTagOptions = ["Flashcards", "Classroom", "Lesson material", "Speaking", "Activity", "Pair work", "Game", "Warm-up", "Worksheet", "Grammar"];
 const hours = Array.from({ length: 24 }, (_, index) => index);
@@ -2132,7 +2132,7 @@ function StudentsView() {
           <tbody>
             {students.map((student) => (
               <tr key={student.id} className={student.status === "Disabled" ? "is-disabled" : ""}>
-                <td><div className="student-cell"><StudentAvatar name={student.name} className={`student-avatar student-avatar--${student.id}`} /><div><div className="student-name-row"><strong className="student-name-button">{student.name}</strong><span className={`student-status student-status--${student.status.toLowerCase()}`}>{student.status}</span></div><small>{student.email}</small></div></div></td>
+                <td><div className="student-cell"><StudentAvatar name={student.name} className={`student-avatar student-avatar--${student.id}`} /><div><div className="student-name-row"><a className="student-name-button" href={`/students/oral-production?student=${encodeURIComponent(student.name)}&email=${encodeURIComponent(student.email)}&from=students`}>{student.name}</a><span className={`student-status student-status--${student.status.toLowerCase()}`}>{student.status}</span></div><small>{student.email}</small></div></div></td>
                 <td><span className="course-badge">{student.level}</span></td>
                 <td>{student.oralProductionReports ? `${student.oralProductionReports} completed` : "No reports"}</td>
                 <td className="last-seen">{student.lastOralProductionActivity ?? "—"}</td>
@@ -2599,6 +2599,12 @@ export default function Home() {
   }
 
   useEffect(() => () => { if (toastTimeoutRef.current) clearTimeout(toastTimeoutRef.current); }, []);
+
+  useEffect(() => {
+    if (new URLSearchParams(window.location.search).get("module") !== "students") return;
+    const frame = requestAnimationFrame(() => setActiveModule("students"));
+    return () => cancelAnimationFrame(frame);
+  }, []);
 
   useEffect(() => {
     const frame = requestAnimationFrame(() => {

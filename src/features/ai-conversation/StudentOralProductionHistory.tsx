@@ -3,12 +3,13 @@
 import { useEffect, useMemo, useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
-import { ArrowLeft, CalendarDays, Clock3, ExternalLink, Mic2, UserRound } from "lucide-react";
+import { ArrowLeft, CalendarDays, ChevronRight, Clock3, ExternalLink, Mic2, UserRound } from "lucide-react";
 import { OralReport } from "./OralReport";
 import { INITIAL_STATE, readState, saveState, STORAGE_KEY, type Attempt, type ConversationState } from "./types";
 import { attemptScore, oralProductionHistory, type OralHistoryItem } from "./report-analytics";
 import "./oral-production-revision.css";
 import "./student-oral-history.css";
+import "./student-oral-history-breadcrumb.css";
 import "./oral-production-refinements.css";
 
 export function StudentOralProductionHistory() {
@@ -50,7 +51,13 @@ export function StudentOralProductionHistory() {
   return <main className="student-history-page">
     <header className="student-history-topbar">
       <Link className="student-history-brand" href="/" aria-label="Flexge dashboard">flexge<span aria-hidden="true">◆</span></Link>
-      <Link className="student-history-back" href="/" aria-label={fromStudents ? "Back to students" : "Back to dashboard"} onClick={(event) => { if (fromStudents) { event.preventDefault(); window.history.back(); } }}><ArrowLeft size={17} /><span>{fromStudents ? "Students" : "Dashboard"}</span></Link>
+      {fromStudents && student ? <nav className="student-history-breadcrumb" aria-label="Breadcrumb">
+        <Link href="/?module=students"><ArrowLeft size={16} /><span>Students</span></Link>
+        <ChevronRight size={15} aria-hidden="true" />
+        <span>{student}</span>
+        <ChevronRight size={15} aria-hidden="true" />
+        <span aria-current="page">Oral Production</span>
+      </nav> : <Link className="student-history-back" href="/"><ArrowLeft size={17} /><span>Dashboard</span></Link>}
     </header>
 
     <section className="student-history-profile" aria-labelledby="student-history-name">

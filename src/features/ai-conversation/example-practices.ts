@@ -1,7 +1,12 @@
 import type { Attempt, Practice } from "./types";
 
-export const EXAMPLE_PACK_VERSION = 1;
-const scenarios = [
+export const EXAMPLE_PACK_VERSION = 2;
+type ExampleScenario = {
+  slug: string; assetSlug?: string; title: string; level: string; student: string; duration: string; completedAt: string; createdAt?: string; scores: number[];
+  themes: string[]; grammar: string[]; instructions: string; summary: string; how: string[]; strengths: string[]; areas: string[];
+  evidence: string[]; growth: string; goal: string; repeated: string[]; cognates: string[]; comment: string;
+};
+const scenarios: ExampleScenario[] = [
   {
     slug: "restaurant", title: "Dinner at a neighborhood restaurant", level: "A2", student: "Anna Johnson", duration: "1:06", scores: [86, 83, 88, 95, 88],
     themes: ["Food", "Everyday English"], grammar: ["Polite requests", "Question formation"],
@@ -51,19 +56,82 @@ const scenarios = [
     goal: "Achieved: the interviewer receives a relevant introduction, evidence of impact and a thoughtful question about expectations.", repeated: ["I", "team"], cognates: ["sensible → sensitive: sensible means practical or reasonable; sensitive means aware of others’ feelings or needs."], comment: "Strong use of evidence, Daniel. Keep the measurable result and clarify the link to this role. Remember: sensitive to customers’ needs.",
   },
 ];
+const annaEvolutionScenarios: ExampleScenario[] = [
+  {
+    slug: "anna-weekend-v2", assetSlug: "weekend", title: "Describe a weekend outdoors", level: "A1", student: "Anna Johnson", completedAt: "2026-09-02T12:00:00.000Z", createdAt: "Sep 02, 2026", duration: "0:48", scores: [59, 57, 61, 67, 58],
+    themes: ["Free time", "Family"], grammar: ["Present simple", "Likes and dislikes"],
+    instructions: "Describe a weekend outdoors: say where you go, who joins you and which activities you enjoy. Give one reason for your favorite activity.",
+    summary: "Anna shares a clear picture of a family weekend and names several activities. Short phrases and repeated words make the message understandable, with room to connect ideas and add detail.",
+    how: ["Named the park and the family members who came along.", "Described a picnic and a walk after lunch.", "Gave a reason for enjoying time outdoors."],
+    strengths: ["Stays focused on the topic.", "Uses familiar words to communicate the main idea.", "Adds a personal reason with ‘because’."],
+    areas: ["Join short sentences with ‘and then’ or ‘after that’.", "Add a descriptive word for the place or activity."],
+    evidence: ["Some word endings are quiet; practice clear final sounds.", "Frequent pauses separate short phrases.", "Uses park, picnic and walk accurately.", "Covers the place, people and one activity.", "Uses simple present forms; check third-person -s."],
+    growth: "Retell the weekend in three connected steps. Add one detail about the weather and one reason the family chose that activity.",
+    goal: "Partly achieved: the listener understands the basic weekend plan and who took part.", repeated: ["like", "park"], cognates: ["No false cognates identified in this example."], comment: "Good first description, Anna. Keep the same clear topic and connect your ideas with ‘then’ and ‘because’.",
+  },
+  {
+    slug: "anna-hotel-v2", assetSlug: "hotel", title: "Check in and ask about hotel services", level: "A2", student: "Anna Johnson", completedAt: "2026-09-06T12:00:00.000Z", createdAt: "Sep 06, 2026", duration: "0:57", scores: [65, 63, 67, 70, 62],
+    themes: ["Travel", "Accommodation"], grammar: ["Polite requests", "Question formation"],
+    instructions: "Check in at the hotel, confirm your booking and ask about breakfast and Wi-Fi. Explain one preference for your room.",
+    summary: "Anna confirms the reservation and asks about breakfast and internet access. Her requests are understandable, and she is beginning to link them to a personal need.",
+    how: ["Confirmed the reservation and gave the guest name.", "Asked when breakfast is served.", "Requested a quiet room and explained why."],
+    strengths: ["Uses useful travel vocabulary.", "Makes the purpose of each request clear.", "Adds a reason to support a preference."],
+    areas: ["Use ‘Could I…?’ for a more polite request.", "Pause briefly between check-in details and questions."],
+    evidence: ["‘Reservation’ is understandable; make the middle syllable clearer.", "Some questions run together without a pause.", "Uses booking, breakfast and quiet room appropriately.", "Addresses the booking, breakfast and room preference.", "Question word order is improving; practice ‘Could I have…?’"],
+    growth: "Practice the check-in again using one complete request for each service. Add a follow-up question if breakfast is not included.",
+    goal: "Achieved: the receptionist can find the booking and understand the room preference.", repeated: ["I want", "room"], cognates: ["No false cognates identified in this example."], comment: "Your requests now include useful details. Try ‘Could I have a quiet room?’ to make them sound more natural.",
+  },
+  {
+    slug: "anna-restaurant-v2", assetSlug: "restaurant", title: "Order a meal and explain a food allergy", level: "A2", student: "Anna Johnson", completedAt: "2026-09-10T12:00:00.000Z", createdAt: "Sep 10, 2026", duration: "1:02", scores: [68, 70, 72, 77, 68],
+    themes: ["Food", "Everyday English"], grammar: ["Polite requests", "Question formation"],
+    instructions: "Order a meal and drink, explain a food allergy and ask whether a dish is safe. Finish by asking for the bill.",
+    summary: "Anna handles the main stages of a restaurant visit and makes the allergy clear. She asks a useful follow-up question and is starting to vary her polite requests.",
+    how: ["Chose a meal and drink with clear details.", "Explained the allergy before ordering.", "Checked ingredients and asked for the bill."],
+    strengths: ["Communicates an important dietary need clearly.", "Uses a relevant follow-up question.", "Keeps the interaction in a sensible order."],
+    areas: ["Use a wider range of phrases for requests.", "Add a short reason when asking about ingredients."],
+    evidence: ["Key food words are clearer than in the first sample.", "Pauses help separate the allergy from the order.", "Uses ingredients, allergy and bill accurately.", "Covers the order, safety question and payment.", "Forms polite questions with occasional word-order slips."],
+    growth: "Try ‘Could you check whether…?’ and explain why the ingredient matters. End with a complete request for the bill.",
+    goal: "Achieved: the server can take the order and understand the allergy requirement.", repeated: ["I'd like", "good"], cognates: ["No false cognates identified in this example."], comment: "You made the allergy easy to understand. Keep adding a reason to your questions so the server knows what to check.",
+  },
+  {
+    slug: "anna-project-v2", assetSlug: "interview", title: "Explain a project you completed", level: "B1", student: "Anna Johnson", completedAt: "2026-09-14T12:00:00.000Z", createdAt: "Sep 14, 2026", duration: "1:04", scores: [73, 75, 70, 82, 75],
+    themes: ["Work", "Career"], grammar: ["Past simple", "Sequencing language"],
+    instructions: "Describe a project you completed: explain the goal, your role, one challenge and the result. Say what you learned from the experience.",
+    summary: "Anna gives the project a clear beginning and outcome, with a specific example of her contribution. A few transitions are missing, so the challenge and result could connect more smoothly.",
+    how: ["Explained the project goal and her responsibility.", "Described a delay and how the team responded.", "Shared a result and one lesson learned."],
+    strengths: ["Supports the story with a concrete example.", "Uses past-tense verbs to describe completed work.", "Reflects on what she learned."],
+    areas: ["Signal the order with ‘first’, ‘then’ and ‘as a result’.", "Use one measurable detail to make the result stronger."],
+    evidence: ["Important project terms are easy to follow.", "Comfortable pace with a few rushed transitions.", "Uses project, deadline and result appropriately.", "Covers the goal, role, challenge and outcome.", "Past simple is mostly consistent."],
+    growth: "Retell the project in four steps: goal, action, challenge and result. Include one number or specific outcome.",
+    goal: "Achieved: the listener can understand Anna's contribution and the project's outcome.", repeated: ["we", "then"], cognates: ["No false cognates identified in this example."], comment: "The example makes your contribution clear. Add a transition before the result to make the story easier to follow.",
+  },
+  {
+    slug: "anna-hotel-followup-v2", assetSlug: "hotel", title: "Handle a follow-up request at the hotel", level: "B1", student: "Anna Johnson", completedAt: "2026-09-17T12:00:00.000Z", createdAt: "Sep 17, 2026", duration: "1:11", scores: [80, 78, 82, 86, 79],
+    themes: ["Travel", "Problem solving"], grammar: ["Indirect questions", "Conditionals"],
+    instructions: "Your room is noisy and you have an early tour. Explain the problem, ask about another room and confirm what can be arranged if none is available.",
+    summary: "Anna explains the problem calmly, gives the reason for needing help and checks two possible solutions. Her questions are more complete, with a small opportunity to make the conditional option more precise.",
+    how: ["Explained the noise and the early start.", "Asked whether another room was available.", "Checked luggage storage as a backup plan."],
+    strengths: ["Provides the context before making a request.", "Uses indirect questions to sound considerate.", "Suggests a practical alternative."],
+    areas: ["Make the backup request conditional: ‘If there isn't a room…’.", "Leave a short pause after the problem statement."],
+    evidence: ["Hotel vocabulary is clear and well stressed.", "Pace is steady, with one long sentence.", "Uses available, luggage storage and alternative accurately.", "Explains the issue, request and backup option.", "Indirect questions are accurate; conditional form needs practice."],
+    growth: "Practice a new service problem using ‘Would it be possible…?’ and offer one clear backup option with an if-clause.",
+    goal: "Achieved: the receptionist understands the problem and can offer a room change or a backup arrangement.", repeated: ["Could you", "room"], cognates: ["No false cognates identified in this example."], comment: "You gave the receptionist enough context to help. The conditional backup plan is the next useful step.",
+  },
+];
 const labels = ["Pronunciation", "Speech Rhythm", "Use of Vocabulary", "Topic Adherence", "Use of Grammar"];
-export const EXAMPLE_PRACTICES: Practice[] = scenarios.map((s) => ({
+const exampleScenarios = [...scenarios, ...annaEvolutionScenarios];
+export const EXAMPLE_PRACTICES: Practice[] = exampleScenarios.map((s) => ({
   id: `example-oral-${s.slug}-v1`, practiceType: "oral-production", isExample: true,
   title: s.title, topic: s.title, scenario: s.instructions, goal: s.instructions, activityInstructions: s.instructions,
-  imageDataUrl: `/oral-production/examples/${s.slug}.png`, role: "Conversation partner", level: s.level,
+  imageDataUrl: `/oral-production/examples/${s.assetSlug ?? s.slug}.png`, role: "Conversation partner", level: s.level,
   duration: "1–2 min", minResponseTime: 1, maxResponseTime: 2, instantFeedback: s.slug !== "hotel",
   expressions: [], focus: labels, grammars: s.grammar, tags: s.themes, students: [s.student],
-  status: "Published", completed: 1, createdAt: "Sep 24, 2026",
+  status: "Published", completed: 1, createdAt: s.createdAt ?? "Sep 24, 2026",
 }));
-export const EXAMPLE_ATTEMPTS: Attempt[] = scenarios.map((s) => ({
+export const EXAMPLE_ATTEMPTS: Attempt[] = exampleScenarios.map((s) => ({
   id: `example-response-${s.slug}-v1`, practiceId: `example-oral-${s.slug}-v1`, student: s.student,
-  completedAt: "2026-09-24T12:00:00.000Z", duration: s.duration, completed: true, transcript: [],
-  audioUrl: `/oral-production/examples/${s.slug}.wav`, syntheticAudio: true,
+  completedAt: s.completedAt ?? "2026-09-24T12:00:00.000Z", duration: s.duration, completed: true, transcript: [],
+  audioUrl: `/oral-production/examples/${s.assetSlug ?? s.slug}.wav`, syntheticAudio: true,
   reviewStatus: s.comment ? "Completed" : "Pending", teacherComment: s.comment,
   evaluation: { mode: "simulated", overall: Math.round(s.scores.reduce((a, b) => a + b, 0) / 5),
     dimensions: labels.map((label, i) => ({ label, score: s.scores[i], evidence: s.evidence[i] })),

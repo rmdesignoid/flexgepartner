@@ -9,6 +9,7 @@ function model(saved) {
   let value = saved && JSON.stringify({ samplePackVersion: 1, ...saved });
   const examples = { exports: {} };
   runInContext(ts.transpileModule(readFileSync(new URL("../src/features/ai-conversation/example-practices.ts", import.meta.url), "utf8"), { compilerOptions: { module: ts.ModuleKind.CommonJS } }).outputText, createContext(examples));
+  if (saved) value = JSON.stringify({ samplePackVersion: examples.exports.EXAMPLE_PACK_VERSION, ...saved });
   const context = createContext({ exports: {}, require: () => examples.exports, window: { localStorage: { getItem: () => value, setItem: (_key, next) => { value = next; } } } });
   const source = readFileSync(new URL("../src/features/ai-conversation/types.ts", import.meta.url), "utf8");
   runInContext(ts.transpileModule(source, { compilerOptions: { module: ts.ModuleKind.CommonJS, target: ts.ScriptTarget.ES2022 } }).outputText, context);
@@ -61,10 +62,12 @@ test("real recordings never receive demonstration evaluations during migration",
 test("example pack seeds once and preserves existing work", () => {
   const api = model({ samplePackVersion: 0, practices: [{ ...model().INITIAL_STATE.practices[0], id: "user", title: "My work", isExample: false }], attempts: [] });
   const state = api.readState();
-  assert.equal(state.practices.length, 5);
-  assert.equal(state.attempts.length, 4);
+  const examplePracticeCount = api.INITIAL_STATE.practices.filter((item) => item.isExample).length;
+  const exampleAttemptCount = api.INITIAL_STATE.attempts.filter((item) => item.id.startsWith("example-response-")).length;
+  assert.equal(state.practices.length, examplePracticeCount + 1);
+  assert.equal(state.attempts.length, exampleAttemptCount);
   assert.equal(state.practices.find((p) => p.id === "user").title, "My work");
-  assert.equal(api.readState().attempts.length, 4);
+  assert.equal(api.readState().attempts.length, exampleAttemptCount);
   api.saveState({ ...state, practices: state.practices.filter((p) => p.id === "user"), attempts: [] });
   assert.equal(api.readState().practices.length, 1);
 });
@@ -81,10 +84,21 @@ test("every new example has a full illustrative report and playable media assets
   }
 });
 
+test("Anna's sample history shows varied scores across dated practices", () => {
+  const state = model().INITIAL_STATE;
+  const evolutionAttempts = state.attempts.filter((attempt) => attempt.student === "Anna Johnson" && attempt.id.includes("-v2"));
+  const scores = evolutionAttempts.map((attempt) => Math.round(attempt.evaluation.dimensions.reduce((sum, dimension) => sum + dimension.score, 0) / attempt.evaluation.dimensions.length));
+  assert.deepEqual(Array.from(scores), [60, 65, 71, 75, 81]);
+  assert.equal(new Set(evolutionAttempts.map((attempt) => attempt.practiceId)).size, 5);
+  assert.ok(evolutionAttempts.every((attempt) => attempt.completed && attempt.syntheticAudio));
+  const dates = Array.from(evolutionAttempts, (attempt) => attempt.completedAt);
+  assert.deepEqual(dates, [...dates].sort());
+});
+
 test("read-only student preview never persists migrations", () => {
   const api = model({ samplePackVersion: 0, practices: [], attempts: [] });
   const snapshot = api.readState({ persistMigration: false });
-  assert.equal(snapshot.practices.length, 4);
+  assert.equal(snapshot.practices.length, model().INITIAL_STATE.practices.filter((item) => item.isExample).length);
   const original = api.storedValue();
   api.readState({ persistMigration: false });
   assert.equal(api.storedValue(), original);

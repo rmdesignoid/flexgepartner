@@ -1,0 +1,6 @@
+.student-history-breadcrumb{display:flex;align-items:center;gap:10px;color:#a1adba;font-size:13px}
+.student-history-breadcrumb a{display:inline-flex;align-items:center;gap:7px;color:#52677b;text-decoration:none}
+.student-history-breadcrumb a:hover{color:#145b91}
+.student-history-breadcrumb>span:not([aria-current]){color:#52677b;font-weight:600}
+.student-history-breadcrumb>[aria-current]{color:#1d5681;font-weight:650}
+@media(max-width:700px){.student-history-breadcrumb{gap:6px;font-size:11px}.student-history-breadcrumb svg{width:13px;height:13px}.student-history-breadcrumb>span:not([aria-current]){max-width:105px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}}
