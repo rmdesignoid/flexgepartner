@@ -34,9 +34,22 @@ export function OralReport({ practice, submission, onUpdate, onReturn }: { pract
 function CorrectionDialog({ original, values, onCancel, onSave }: { original: Dimension[]; values: Dimension[]; onCancel: () => void; onSave: (values: Dimension[]) => void }) {
   const ref = useRef<HTMLDialogElement>(null);
   const [draft, setDraft] = useState(values.map((value) => ({ ...value, scoreText: String(value.score) })));
-  useEffect(() => { const previous = document.activeElement as HTMLElement | null; ref.current?.showModal(); return () => previous?.focus(); }, []);
+  useEffect(() => {
+    const dialog = ref.current;
+    const previous = document.activeElement as HTMLElement | null;
+    if (dialog && !dialog.open) dialog.showModal();
+    return () => {
+      if (dialog?.open) dialog.close();
+      previous?.focus();
+    };
+  }, []);
   const valid = draft.every((item) => item.scoreText.trim() !== "" && Number.isFinite(Number(item.scoreText)) && Number(item.scoreText) >= 0 && Number(item.scoreText) <= 100);
-  return <dialog ref={ref} className="op-correction-dialog" onCancel={onCancel} aria-labelledby="correction-title"><div className="op-section-heading"><h2 id="correction-title">Edit speaking skills</h2><Button variant="ghost" onClick={onCancel} aria-label="Close correction"><X size={20} /></Button></div><p>AI correction · Review the suggested scores and comments.</p>{draft.map((item, index) => { const changed = item.scoreText !== String(original[index].score) || item.evidence !== original[index].evidence; return <section className="op-correction" key={item.label}><h3>{item.label} {changed ? <small>Edited</small> : null}</h3><div className="op-original">{changed ? <del>AI suggested score: {original[index].score}/100 — {original[index].evidence}</del> : <span>AI suggested score: {original[index].score}/100 — {original[index].evidence}</span>}</div><label htmlFor={`score-${index}`}>Teacher’s score (0–100)</label><Input id={`score-${index}`} type="number" min="0" max="100" value={item.scoreText} onChange={(event) => setDraft(draft.map((value, i) => i === index ? { ...value, scoreText: event.target.value } : value))} /><label htmlFor={`evidence-${index}`}>Teacher’s comment</label><Textarea id={`evidence-${index}`} value={item.evidence ?? ""} onChange={(event) => setDraft(draft.map((value, i) => i === index ? { ...value, evidence: event.target.value } : value))} /></section>; })}<p className="op-original">The overall score is preserved independently of these criteria.</p><div className="op-comment-actions"><Button variant="secondary" onClick={onCancel}>Cancel</Button><Button disabled={!valid} onClick={() => onSave(draft.map(({ scoreText, ...item }) => ({ ...item, score: Number(scoreText) })))}>Save</Button></div></dialog>;
+  return <dialog ref={ref} className="op-correction-dialog" onCancel={onCancel} aria-labelledby="correction-title">
+    <div className="op-correction-dialog__header"><h2 id="correction-title">Edit speaking skills</h2><Button variant="ghost" onClick={onCancel} aria-label="Close correction"><X size={20} /></Button></div>
+    <p className="op-correction-dialog__intro">AI correction · Review the suggested scores and comments.</p>
+    <div className="op-correction-dialog__body">{draft.map((item, index) => { const changed = item.scoreText !== String(original[index].score) || item.evidence !== original[index].evidence; return <section className="op-correction" key={item.label}><h3>{item.label} {changed ? <small>Edited</small> : null}</h3><div className="op-original">{changed ? <del>AI suggested score: {original[index].score}/100 — {original[index].evidence}</del> : <span>AI suggested score: {original[index].score}/100 — {original[index].evidence}</span>}</div><label htmlFor={`score-${index}`}>Teacher’s score (0–100)</label><Input id={`score-${index}`} type="number" min="0" max="100" value={item.scoreText} onChange={(event) => setDraft(draft.map((value, i) => i === index ? { ...value, scoreText: event.target.value } : value))} /><label htmlFor={`evidence-${index}`}>Teacher’s comment</label><Textarea id={`evidence-${index}`} value={item.evidence ?? ""} onChange={(event) => setDraft(draft.map((value, i) => i === index ? { ...value, evidence: event.target.value } : value))} /></section>; })}<p className="op-original">The overall score is preserved independently of these criteria.</p></div>
+    <div className="op-correction-dialog__footer"><div className="op-comment-actions"><Button variant="secondary" onClick={onCancel}>Cancel</Button><Button disabled={!valid} onClick={() => onSave(draft.map(({ scoreText, ...item }) => ({ ...item, score: Number(scoreText) })))}>Save</Button></div></div>
+  </dialog>;
 }
 
 function RadarChart({ dimensions }: { dimensions: Dimension[] }) {

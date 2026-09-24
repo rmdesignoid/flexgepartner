@@ -32,7 +32,6 @@ export function AIConversationView() {
   const [search, setSearch] = useState("");
   const [levelFilters, setLevelFilters] = useState<string[]>([]);
   const [tagFilters, setTagFilters] = useState<string[]>([]);
-  const [grammarFilters, setGrammarFilters] = useState<string[]>([]);
   const [practice, setPractice] = useState<Practice | null>(null);
   const [selectedStudents, setSelectedStudents] = useState<string[]>([]);
   const [dueDate, setDueDate] = useState("");
@@ -63,9 +62,8 @@ export function AIConversationView() {
     const query = search.trim().toLowerCase();
     return (!query || item.title.toLowerCase().includes(query))
       && (!levelFilters.length || levelFilters.includes(item.level))
-      && (!tagFilters.length || (item.tags ?? []).some((value) => tagFilters.includes(value)))
-      && (!grammarFilters.length || (item.grammars ?? []).some((value) => grammarFilters.includes(value)));
-  }), [state.practices, search, levelFilters, tagFilters, grammarFilters]);
+      && (!tagFilters.length || (item.tags ?? []).some((value) => tagFilters.includes(value)));
+  }), [state.practices, search, levelFilters, tagFilters]);
   const visibleStudents = useMemo(() => STUDENT_DIRECTORY.filter((student) =>
     student.name.toLowerCase().includes(studentSearch.trim().toLowerCase())
     && (student.level === practice?.level || !!practice?.students.includes(student.name))
@@ -172,7 +170,7 @@ export function AIConversationView() {
   const trialPractice = selectedPractice;
   const trialUrl = trialPractice ? `/conversation/preview?practiceId=${encodeURIComponent(trialPractice.id)}` : "#";
 
-  return <div className="ai-teacher">
+  return <div className={`ai-teacher ai-teacher--${stage}`}>
     <header className="ai-topline">
       <div className="ai-header-context">
         <ConversationBreadcrumb current={pageTitle} items={[
@@ -208,13 +206,12 @@ export function AIConversationView() {
       <div className="ai-studio-filters" aria-label="Filter practices">
         <label className="ai-studio-search"><span aria-hidden="true">⌕</span><input type="search" value={search} onChange={(event) => setSearch(event.target.value)} placeholder="Search by name" aria-label="Search practices by name" /></label>
         <FilterMenu label="Levels" options={Array.from(new Set(state.practices.map((item) => item.level))).sort()} value={levelFilters} onChange={setLevelFilters} />
-        <FilterMenu label="Grammar" options={Array.from(new Set(state.practices.flatMap((item) => item.grammars ?? []))).sort()} value={grammarFilters} onChange={setGrammarFilters} />
         <FilterMenu label="Themes" options={tagOptions} value={tagFilters} onChange={setTagFilters} />
-        {search || levelFilters.length || tagFilters.length || grammarFilters.length ? <button type="button" className="ai-clear-filters" onClick={() => { setSearch(""); setLevelFilters([]); setTagFilters([]); setGrammarFilters([]); }}>Clear filters</button> : null}
+        {search || levelFilters.length || tagFilters.length ? <button type="button" className="ai-clear-filters" onClick={() => { setSearch(""); setLevelFilters([]); setTagFilters([]); }}>Clear filters</button> : null}
       </div>
       {visiblePractices.length ? <div className="ai-practice-list ai-practice-table"><div className="ai-practice-table__header" aria-hidden="true"><span>Practice</span><span>Level</span><span>Students</span><span>Progress</span><span>Status</span><span>Creation date</span><span /></div>{visiblePractices.map((item) => { const completed = completedStudents(item, state.attempts).size; const status = practiceStatus(item); return <button ref={highlightedPracticeId === item.id ? highlightedPracticeRef : undefined} data-practice-id={item.id} className={`ai-practice-row${highlightedPracticeId === item.id ? " is-highlighted" : ""}`} type="button" key={item.id} onClick={() => openPractice(item.id)} aria-label={`Open ${item.title}, ${status}`}>
         <span className="ai-practice-main"><span className={`ai-practice-type-icon ai-practice-type-icon--${item.practiceType ?? "oral-production"}`} title={item.practiceType === "ai-exercise" ? "AI Exercise" : "Oral Production"} aria-label={item.practiceType === "ai-exercise" ? "AI Exercise" : "Oral Production"}>{item.practiceType === "ai-exercise" ? <ClipboardList size={17} /> : <Mic2 size={17} />}</span><span className="ai-practice-main-copy"><strong>{item.title}</strong><span className="ai-practice-tags">{(item.tags ?? []).slice(0, 2).map((tag) => <span key={tag}>{tag}</span>)}{(item.tags?.length ?? 0) > 2 ? <span className="ai-practice-tag-overflow">+{item.tags!.length - 2}</span> : null}</span></span></span><Badge>{item.level}</Badge><span className="ai-practice-students"><Users size={15} />{item.students.length ? `${item.students.length} assigned` : "No students"}</span><span className="ai-progress-count">{completed}/{item.students.length} completed</span><span className={`ai-status ai-status--${status.toLowerCase().replaceAll(" ", "-")}`}>{status}</span><span className="ai-practice-date">{item.createdAt}</span><ChevronRight size={17} className="ai-chevron" />
-      </button>; })}</div> : <EmptyState title="No practices found" description="Try changing your search or filters." action={<Button variant="secondary" onClick={() => { setSearch(""); setLevelFilters([]); setTagFilters([]); setGrammarFilters([]);  }}>Clear filters</Button>} />}
+      </button>; })}</div> : <EmptyState title="No practices found" description="Try changing your search or filters." action={<Button variant="secondary" onClick={() => { setSearch(""); setLevelFilters([]); setTagFilters([]); }}>Clear filters</Button>} />}
     </> : null}
 
     {stage === "type" ? <section className="ai-flow"><div className="ai-type-grid">

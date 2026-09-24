@@ -13,6 +13,10 @@
 
 /* Teacher layout shares the full-width header/list structure of My Resources. */
 .ai-teacher{display:flex;flex-direction:column;height:100%;min-height:0;padding:0;overflow:hidden}
+.ai-teacher--list{flex:1 1 auto;min-width:0;overflow-x:hidden;overflow-y:auto;overscroll-behavior:contain;scrollbar-gutter:stable}
+.ai-teacher--list>.ai-topline,.ai-teacher--list>.ai-dashboard-kpis,.ai-teacher--list>.ai-studio-filters{flex:0 0 auto}
+.ai-teacher--list>.ai-practice-table{flex:0 0 auto;min-height:0;overflow:visible}
+.ai-teacher--list .ai-practice-table__header{position:static}
 .ai-topline{flex-shrink:0;max-width:none;min-height:68px;margin:0;padding:12px 24px;align-items:center;border-bottom:1px solid var(--ai-line);background:var(--ai-soft)}
 .ai-header-context{min-width:0;flex:1}
 .ai-breadcrumb{display:flex;align-items:center;flex-wrap:wrap;gap:8px}
