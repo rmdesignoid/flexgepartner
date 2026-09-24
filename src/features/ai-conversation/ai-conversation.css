@@ -15,8 +15,6 @@
 .ai-teacher{display:flex;flex-direction:column;height:100%;min-height:0;padding:0;overflow:hidden}
 .ai-teacher--list{flex:1 1 auto;min-width:0;overflow-x:hidden;overflow-y:auto;overscroll-behavior:contain;scrollbar-gutter:stable}
 .ai-teacher--list>.ai-topline,.ai-teacher--list>.ai-dashboard-kpis,.ai-teacher--list>.ai-studio-filters{flex:0 0 auto}
-.ai-teacher--list>.ai-practice-table{flex:0 0 auto;min-height:0;overflow:visible}
-.ai-teacher--list .ai-practice-table__header{position:static}
 .ai-notice{position:fixed;top:16px;right:16px;left:auto;z-index:10000;width:max-content;max-width:calc(100vw - 32px);margin:0;box-shadow:0 12px 32px #14233824;animation:ai-notice-enter .18s ease-out both}
 @keyframes ai-notice-enter{from{opacity:0;transform:translateY(-6px)}to{opacity:1;transform:translateY(0)}}
 @media(max-width:680px){.ai-notice{top:12px;right:12px;max-width:calc(100vw - 24px)}}
@@ -38,6 +36,8 @@
 .ai-flow .ai-form-card{margin:0 auto}
 .ai-teacher .ai-practice-list{width:100%;max-width:none;margin:0;border:0;border-radius:0}
 .ai-teacher .ai-practice-table{flex:1;min-height:0;overflow:auto}
+.ai-teacher--list>.ai-practice-table{flex:0 0 auto;min-height:0;overflow:visible}
+.ai-teacher--list .ai-practice-table__header{position:static}
 .ai-practice-table__header,.ai-practice-row{grid-template-columns:minmax(180px,1.6fr) 58px minmax(112px,.9fr) 100px 112px 110px 18px;gap:14px}
 .ai-practice-table__header,.ai-student-table__header{display:grid;align-items:center;min-height:40px;padding:0 24px;border-bottom:1px solid var(--ai-line);color:var(--ai-muted);background:var(--ai-surface);font-size:12px;font-weight:500}
 .ai-practice-table__header,.ai-student-table__header{position:sticky;top:0;z-index:1}
