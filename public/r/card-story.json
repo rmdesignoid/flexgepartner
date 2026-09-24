@@ -1,0 +1,21 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "card-story",
+  "type": "registry:block",
+  "title": "Flexge Card Story",
+  "description": "Card surface and empty state compositions for product panels.",
+  "categories": [
+    "flexge",
+    "storybook",
+    "core",
+    "card"
+  ],
+  "files": [
+    {
+      "path": "src/design-system/card.stories.tsx",
+      "type": "registry:file",
+      "target": "@ui/card.stories.tsx",
+      "content": "import { Search, UserPlus } from \"lucide-react\";\nimport type { Meta, StoryObj } from \"@storybook/react-vite\";\nimport { Button, Card, EmptyState } from \".\";\n\nconst meta = { title: \"Components/Core/Card\", component: Card, tags: [\"autodocs\"], parameters: { layout: \"centered\" } } satisfies Meta<typeof Card>;\nexport default meta;\ntype Story = StoryObj<typeof meta>;\nexport const Default: Story = { render: () => <Card><h3 style={{ margin: \"0 0 8px\" }}>Resources</h3><p style={{ margin: \"0 0 16px\", color: \"var(--ds-muted)\" }}>Reusable surfaces inherit the same tokens.</p><Button variant=\"secondary\"><UserPlus size={15} />Add resource</Button></Card> };\nexport const Empty: Story = { render: () => <Card><EmptyState title=\"No resources found\" description=\"Try changing the filters or create a new resource.\" action={<Button><Search size={15} />Search again</Button>} /></Card> };\n"
+    }
+  ]
+}

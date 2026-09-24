@@ -1,0 +1,28 @@
+import { Meta, Source } from "@storybook/addon-docs/blocks";
+
+<Meta title="Introduction" />
+
+# Flexge Design System
+
+O Storybook é a fonte local da verdade para os componentes reutilizáveis do Flexge. Use esta documentação para entender a intenção visual, testar estados e copiar exemplos de implementação.
+
+## Como navegar
+
+- **Foundations** contém tokens de cor, tipografia, espaçamento, raios e ícones.
+- **Components** contém os componentes core e seus estados.
+- **Patterns** mostra composições recorrentes das telas do produto.
+
+## Princípios
+
+1. Prefira tokens semânticos (`--ds-*`) a valores isolados.
+2. Escolha a variante pelo significado da ação, não apenas pela aparência.
+3. Todo estado interativo precisa permanecer legível em light e dark theme.
+4. Componentes de domínio devem compor os componentes core, sem duplicar estilos.
+
+## Executar localmente
+
+<Source language="bash" code={`npm run storybook`} />
+
+Para gerar a versão estática:
+
+<Source language="bash" code={`npm run build-storybook`} />

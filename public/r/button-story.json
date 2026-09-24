@@ -1,0 +1,33 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "button-story",
+  "type": "registry:block",
+  "title": "Flexge Button Story",
+  "description": "Button component and Storybook stories for the Flexge Class Planner design system.",
+  "categories": [
+    "flexge",
+    "storybook",
+    "core",
+    "button"
+  ],
+  "files": [
+    {
+      "path": "registry/flexge/button-story/button.tsx",
+      "type": "registry:component",
+      "target": "@ui/button.tsx",
+      "content": "import { forwardRef, type ButtonHTMLAttributes } from \"react\";\n\nconst cn = (...values: Array<string | false | null | undefined>) => values.filter(Boolean).join(\" \");\n\nexport type ButtonVariant = \"primary\" | \"secondary\" | \"ghost\" | \"danger\";\nexport type ButtonSize = \"sm\" | \"md\" | \"lg\";\n\nexport interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {\n  variant?: ButtonVariant;\n  size?: ButtonSize;\n  loading?: boolean;\n}\n\nexport const Button = forwardRef<HTMLButtonElement, ButtonProps>(function Button(\n  { variant = \"primary\", size = \"md\", loading = false, disabled, children, className, ...props },\n  ref,\n) {\n  return (\n    <button\n      ref={ref}\n      className={cn(\"ds-button\", `ds-button--${variant}`, `ds-button--${size}`, className)}\n      disabled={disabled || loading}\n      {...props}\n    >\n      {loading ? \"Loading…\" : children}\n    </button>\n  );\n});\n\nButton.displayName = \"Button\";\n"
+    },
+    {
+      "path": "registry/flexge/button-story/button.css",
+      "type": "registry:style",
+      "target": "@ui/button.css",
+      "content": ".ds-button {\n  min-height: 36px;\n  display: inline-flex;\n  align-items: center;\n  justify-content: center;\n  gap: 8px;\n  padding: 0 12px;\n  border: 1px solid transparent;\n  border-radius: 6px;\n  cursor: pointer;\n  font: 600 14px/20px system-ui, sans-serif;\n  white-space: nowrap;\n  transition: background .15s ease, border-color .15s ease, box-shadow .15s ease, color .15s ease;\n}\n.ds-button:focus-visible { outline: 0; box-shadow: 0 0 0 2px rgb(79 134 181 / 25%); }\n.ds-button:disabled { cursor: not-allowed; opacity: .6; }\n.ds-button--primary { color: #fff; background: #4f86b5; }\n.ds-button--primary:hover:not(:disabled) { background: #3f739f; }\n.ds-button--secondary { color: #1f2937; border-color: #d4d9e0; background: #fff; }\n.ds-button--secondary:hover:not(:disabled) { background: #f3f5f7; }\n.ds-button--ghost { color: #3f739f; background: transparent; }\n.ds-button--danger { color: #fff; background: #c75757; }\n.ds-button--sm { min-height: 28px; padding-inline: 10px; font-size: 12px; line-height: 16px; }\n.ds-button--lg { min-height: 40px; padding-inline: 16px; }\n"
+    },
+    {
+      "path": "registry/flexge/button-story/button.stories.tsx",
+      "type": "registry:file",
+      "target": "@ui/button.stories.tsx",
+      "content": "import type { Meta, StoryObj } from \"@storybook/react-vite\";\nimport { Button } from \"./button\";\n\nconst meta = {\n  title: \"Components/Core/Button\",\n  component: Button,\n  tags: [\"autodocs\"],\n  parameters: { layout: \"centered\" },\n  argTypes: {\n    variant: { control: \"select\", options: [\"primary\", \"secondary\", \"ghost\", \"danger\"] },\n    size: { control: \"select\", options: [\"sm\", \"md\", \"lg\"] },\n    loading: { control: \"boolean\" },\n    disabled: { control: \"boolean\" },\n    children: { control: \"text\" },\n  },\n  args: { variant: \"primary\", size: \"md\", children: \"Button\", loading: false, disabled: false },\n} satisfies Meta<typeof Button>;\n\nexport default meta;\ntype Story = StoryObj<typeof meta>;\n\nexport const Default: Story = {};\nexport const Secondary: Story = { args: { variant: \"secondary\" } };\nexport const Ghost: Story = { args: { variant: \"ghost\" } };\nexport const Danger: Story = { args: { variant: \"danger\" } };\nexport const Loading: Story = { args: { variant: \"secondary\", loading: true } };\nexport const Disabled: Story = { args: { disabled: true } };\nexport const Small: Story = { args: { size: \"sm\" } };\nexport const Large: Story = { args: { size: \"lg\" } };\n"
+    }
+  ]
+}

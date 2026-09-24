@@ -1,0 +1,79 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry.json",
+  "name": "flexge-class-planner",
+  "homepage": "http://localhost:6006",
+  "items": [
+    {
+      "name": "button-story",
+      "type": "registry:block",
+      "title": "Flexge Button Story",
+      "description": "Button component and Storybook stories for the Flexge Class Planner design system.",
+      "categories": [
+        "flexge",
+        "storybook",
+        "core",
+        "button"
+      ]
+    },
+    {
+      "name": "fields-story",
+      "type": "registry:block",
+      "title": "Flexge Fields Story",
+      "description": "Form fields, search, select, invalid and disabled states for the Class Planner.",
+      "categories": [
+        "flexge",
+        "storybook",
+        "core",
+        "forms"
+      ]
+    },
+    {
+      "name": "badge-story",
+      "type": "registry:block",
+      "title": "Flexge Badge Story",
+      "description": "Default, tonal and planning status badge stories for the Class Planner.",
+      "categories": [
+        "flexge",
+        "storybook",
+        "core",
+        "badge"
+      ]
+    },
+    {
+      "name": "avatar-story",
+      "type": "registry:block",
+      "title": "Flexge Avatar Story",
+      "description": "Initials, photos and stacked avatars with overflow examples.",
+      "categories": [
+        "flexge",
+        "storybook",
+        "core",
+        "avatar"
+      ]
+    },
+    {
+      "name": "tabs-story",
+      "type": "registry:block",
+      "title": "Flexge Tabs Story",
+      "description": "Class Planner tabs with active, alternate and disabled states.",
+      "categories": [
+        "flexge",
+        "storybook",
+        "core",
+        "tabs"
+      ]
+    },
+    {
+      "name": "card-story",
+      "type": "registry:block",
+      "title": "Flexge Card Story",
+      "description": "Card surface and empty state compositions for product panels.",
+      "categories": [
+        "flexge",
+        "storybook",
+        "core",
+        "card"
+      ]
+    }
+  ]
+}

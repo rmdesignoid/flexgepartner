@@ -1,0 +1,14 @@
+<svg preserveAspectRatio="none" overflow="visible" style="display: block;" width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+<g id="Class Header Container" clip-path="url(#clip0_0_3)">
+<path id="Shape" d="M0 12C0 5.37258 5.37258 0 12 0C18.6274 0 24 5.37258 24 12C24 18.6274 18.6274 24 12 24C5.37258 24 0 18.6274 0 12Z" fill="#FAE8FF"/>
+<path id="Shape 2" d="M14.2222 17V15.8889C14.2222 15.2995 13.9881 14.7343 13.5713 14.3175C13.1546 13.9008 12.5893 13.6667 12 13.6667H8.66667C8.07727 13.6667 7.51207 13.9008 7.09527 14.3175C6.67853 14.7343 6.44442 15.2995 6.44442 15.8889V17" stroke="#A21CAF" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+<path id="Shape 3" d="M14.2223 7.0716C14.6988 7.19513 15.1208 7.4734 15.4221 7.86273C15.7233 8.25207 15.8868 8.73047 15.8868 9.22273C15.8868 9.715 15.7233 10.1933 15.4221 10.5827C15.1208 10.972 14.6988 11.2503 14.2223 11.3739" stroke="#E879F9" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+<path id="Shape 4" d="M17.5556 16.9994V15.8883C17.5552 15.3959 17.3913 14.9176 17.0897 14.5285C16.788 14.1393 16.3657 13.8614 15.8889 13.7383" stroke="#E879F9" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+<path id="Shape 5" d="M10.3333 11.4445C11.5606 11.4445 12.5555 10.4495 12.5555 9.2222C12.5555 7.99493 11.5606 7 10.3333 7C9.106 7 8.11107 7.99493 8.11107 9.2222C8.11107 10.4495 9.106 11.4445 10.3333 11.4445Z" stroke="#A21CAF" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+</g>
+<defs>
+<clipPath id="clip0_0_3">
+<rect width="24" height="24" fill="white"/>
+</clipPath>
+</defs>
+</svg>

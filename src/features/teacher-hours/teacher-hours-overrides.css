@@ -1,0 +1,42 @@
+.teacher-hours__header.resources-header {
+  min-height: 68px;
+  margin: 0;
+  padding: 12px 24px;
+  background: var(--surface-soft);
+}
+
+.teacher-hours__header.resources-header h1 {
+  font-size: var(--ds-font-size-base);
+  line-height: var(--ds-line-height-base);
+}
+
+.teacher-hours__header.resources-header p {
+  margin-top: 3px;
+  font-size: var(--ds-font-size-xs);
+  line-height: var(--ds-line-height-xs);
+}
+
+.teacher-hours__filters .teacher-hours__period {
+  min-height: var(--ds-control-height);
+  height: auto;
+  padding: 5px 9px;
+  border-color: var(--ds-border);
+  border-radius: var(--ds-radius-sm);
+  color: var(--ds-foreground);
+  background-color: var(--ds-surface);
+  font-size: var(--ds-font-size-sm);
+  font-weight: var(--ds-font-weight-regular);
+}
+
+.teacher-hours__filters .teacher-hours__period:hover {
+  border-color: color-mix(in srgb, var(--ds-foreground) 28%, var(--ds-border));
+  background-color: var(--ds-surface-soft);
+}
+
+@media (max-width: 1100px) {
+  .teacher-hours__header.resources-header { padding-inline: 16px; }
+}
+
+@media (max-width: 760px) {
+  .teacher-hours__header.resources-header { align-items: stretch; }
+}

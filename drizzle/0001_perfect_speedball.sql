@@ -1,0 +1,1 @@
+CREATE INDEX `idx_calendar_events_scheduled_date_start` ON `calendar_events` (`scheduled_date`,`start_minutes`);

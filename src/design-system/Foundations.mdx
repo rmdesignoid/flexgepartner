@@ -1,0 +1,109 @@
+import { Meta } from "@storybook/addon-docs/blocks";
+
+<Meta title="Foundations/Overview" />
+
+# Foundations
+
+Os foundations são os valores compartilhados entre a aplicação e os componentes do design system. Prefira tokens semânticos a valores hexadecimais ou sombras locais.
+
+## Escala de cores
+
+### Superfícies e conteúdo
+
+<div className="ds-doc-token-table">
+  <div className="ds-doc-token-row ds-doc-token-header"><span>Preview</span><span>Token</span><span>Uso</span></div>
+  <div className="ds-doc-token-row"><span className="ds-doc-swatch" style={{background: "var(--ds-background)"}} /><code>--ds-background</code><span>Canvas da aplicação</span></div>
+  <div className="ds-doc-token-row"><span className="ds-doc-swatch" style={{background: "var(--ds-surface)"}} /><code>--ds-surface</code><span>Cards, campos e superfícies</span></div>
+  <div className="ds-doc-token-row"><span className="ds-doc-swatch" style={{background: "var(--ds-surface-soft)"}} /><code>--ds-surface-soft</code><span>Headers e áreas suaves</span></div>
+  <div className="ds-doc-token-row"><span className="ds-doc-swatch" style={{background: "var(--ds-secondary)"}} /><code>--ds-secondary</code><span>Hover e agrupamentos</span></div>
+  <div className="ds-doc-token-row"><span className="ds-doc-swatch" style={{background: "var(--ds-border)"}} /><code>--ds-border</code><span>Divisores e contornos</span></div>
+  <div className="ds-doc-token-row"><span className="ds-doc-swatch" style={{background: "var(--ds-foreground)"}} /><code>--ds-foreground</code><span>Texto principal</span></div>
+  <div className="ds-doc-token-row"><span className="ds-doc-swatch" style={{background: "var(--ds-muted)"}} /><code>--ds-muted</code><span>Texto secundário</span></div>
+</div>
+
+### Ações e feedback
+
+<div className="ds-doc-color-grid">
+  <div><span style={{background: "var(--ds-primary)"}} /><code>--ds-primary</code><small>Ações, links e foco</small></div>
+  <div><span style={{background: "var(--ds-accent)"}} /><code>--ds-accent</code><small>Ação principal</small></div>
+  <div><span style={{background: "var(--ds-success)"}} /><code>--ds-success</code><small>Concluído e habilitado</small></div>
+  <div><span style={{background: "var(--ds-warning)"}} /><code>--ds-warning</code><small>Atenção e pendência</small></div>
+  <div><span style={{background: "var(--ds-danger)"}} /><code>--ds-danger</code><small>Erro e ação destrutiva</small></div>
+</div>
+
+### Status de planejamento
+
+<div className="ds-doc-status-grid">
+  <div className="ds-badge ds-status-badge--to-plan">To Plan<small>slate</small></div>
+  <div className="ds-badge ds-status-badge--planning">Planning<small>amber</small></div>
+  <div className="ds-badge ds-status-badge--planned">Planned<small>violet</small></div>
+  <div className="ds-badge ds-status-badge--taught">Taught<small>teal</small></div>
+</div>
+
+Use o seletor **Theme** do Storybook para comparar os valores light e dark. O significado do token permanece o mesmo; apenas sua aplicação visual muda.
+
+## Tipografia
+
+Família padrão: `--ds-font-sans` (`Inter`).
+
+O sistema usa a escala tipográfica do shadcn/Tailwind. Não crie tamanhos intermediários; escolha sempre um dos tokens abaixo.
+
+| Token | Tamanho / altura de linha | Uso típico |
+| --- | ---: | --- |
+| `--ds-font-size-xs` | 12px / 16px | Metadados, captions e badges |
+| `--ds-font-size-sm` | 14px / 20px | Texto padrão da interface, labels e controles |
+| `--ds-font-size-base` | 16px / 24px | Texto de destaque e títulos compactos |
+| `--ds-font-size-lg` | 18px / 28px | Títulos de painéis |
+| `--ds-font-size-xl` | 20px / 28px | Títulos de seção |
+| `--ds-font-size-2xl` | 24px / 32px | Títulos de página |
+| `--ds-font-size-3xl` | 30px / 36px | Display compacto |
+| `--ds-font-size-4xl` | 36px / 40px | Display amplo |
+
+<div className="ds-doc-type-sample"><span className="ds-doc-type-display">Teacher Dashboard</span><code>30px / 36px · 700</code><small>Títulos principais</small></div>
+<div className="ds-doc-type-sample"><span className="ds-doc-type-heading">Section heading</span><code>20px / 28px · 600</code><small>Títulos de seção</small></div>
+<div className="ds-doc-type-sample"><span className="ds-doc-type-body">Use texto de corpo para descrições, labels e conteúdo de apoio.</span><code>14px / 20px · 400</code><small>Conteúdo principal</small></div>
+<div className="ds-doc-type-sample"><span className="ds-doc-type-caption">Caption and metadata</span><code>12px / 16px · 400</code><small>Metadados e apoio</small></div>
+
+## Espaçamento
+
+| Token | Valor | Uso típico |
+| --- | ---: | --- |
+| `--ds-space-1` | 4px | Gaps compactos |
+| `--ds-space-2` | 8px | Ícone + label |
+| `--ds-space-3` | 12px | Padding de controles |
+| `--ds-space-4` | 16px | Padding de cards |
+| `--ds-space-5` | 20px | Separação de seções |
+| `--ds-space-6` | 24px | Margens de layout |
+
+Use múltiplos de 4px para manter ritmo e previsibilidade entre componentes.
+
+## Radius
+
+<div className="ds-doc-radius-grid">
+  <div><span style={{borderRadius: "var(--ds-radius-sm)"}} /><code>--ds-radius-sm</code><small>6px · controles</small></div>
+  <div><span style={{borderRadius: "var(--ds-radius-md)"}} /><code>--ds-radius-md</code><small>10px · campos e tabs</small></div>
+  <div><span style={{borderRadius: "var(--ds-radius-lg)"}} /><code>--ds-radius-lg</code><small>14px · cards e popovers</small></div>
+  <div><span style={{borderRadius: "var(--ds-radius-xl)"}} /><code>--ds-radius-xl</code><small>18px · dialogs</small></div>
+  <div><span style={{borderRadius: "var(--ds-radius-full)"}} /><code>--ds-radius-full</code><small>9999px · badges e avatares</small></div>
+</div>
+
+## Shadows
+
+<div className="ds-doc-shadow-grid">
+  <div style={{boxShadow: "var(--ds-shadow-sm)"}}><code>--ds-shadow-sm</code><small>Elevação sutil</small></div>
+  <div style={{boxShadow: "var(--ds-shadow-md)"}}><code>--ds-shadow-md</code><small>Cards e superfícies</small></div>
+  <div style={{boxShadow: "var(--ds-shadow-lg)"}}><code>--ds-shadow-lg</code><small>Dialogs e painéis</small></div>
+  <div style={{boxShadow: "var(--ds-shadow-popover)"}}><code>--ds-shadow-popover</code><small>Menus e popovers</small></div>
+</div>
+
+Use a menor elevação que comunique hierarquia. Em dark theme, as sombras são mais densas e devem continuar acompanhadas de contraste de superfície ou borda.
+
+## Borders e estados
+
+<div className="ds-doc-state-grid">
+  <div><span className="ds-doc-state-sample ds-doc-state-focus">Focus</span><code>--ds-focus-ring</code><small>2px / primary / 18%</small></div>
+  <div><span className="ds-doc-state-sample ds-doc-state-error">Error</span><code>--ds-error-ring</code><small>2px / danger / 18%</small></div>
+  <div><span className="ds-doc-state-sample ds-doc-state-disabled">Disabled</span><code>opacity: .6</code><small>Sem interação</small></div>
+</div>
+
+Os estados devem manter o mesmo contrato entre todos os componentes: foco visível, erro acionável e disabled claramente indisponível.

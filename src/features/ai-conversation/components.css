@@ -1,0 +1,151 @@
+/* Shared component scale for teacher management and conversation testing.
+   Keep navigation/body at 14px, supporting text at 12px, sections at 16px.
+   Product colors remain separate from component typography and geometry. */
+:is(.ai-teacher, .ai-test-page) {
+  --conversation-text: var(--ds-font-size-sm);
+  --conversation-leading: var(--ds-line-height-sm);
+  --conversation-caption: var(--ds-font-size-xs);
+  --conversation-caption-leading: var(--ds-line-height-xs);
+  --conversation-heading: var(--ds-font-size-base);
+  --conversation-heading-leading: var(--ds-line-height-base);
+  --conversation-radius: 8px;
+  --ai-line: color-mix(in srgb, var(--ai-text) 13%, var(--ai-surface));
+  font-family: var(--ds-font-sans);
+  font-size: var(--conversation-text);
+  line-height: var(--conversation-leading);
+  font-weight: 400;
+  -webkit-font-smoothing: antialiased;
+}
+:is(.ai-teacher, .ai-test-page) *,
+:is(.ai-teacher, .ai-test-page) *::before,
+:is(.ai-teacher, .ai-test-page) *::after { box-sizing: border-box; }
+
+/* One size and baseline for every breadcrumb item, including the current page. */
+.ai-teacher .ai-breadcrumb { display: block; min-width: 0; }
+.ai-breadcrumb ol { display: flex; align-items: center; flex-wrap: wrap; gap: 6px 8px; margin: 0; padding: 0; list-style: none; }
+.ai-breadcrumb li { display: inline-flex; align-items: center; gap: 8px; min-width: 0; max-width: 100%; }
+.ai-breadcrumb li > svg { flex: 0 0 14px; color: var(--ai-muted); stroke-width: 1.5; }
+.ai-teacher .ai-topline .ai-breadcrumb :is(button, h1) {
+  margin: 0; padding: 0; border: 0; border-radius: 3px;
+  font-family: inherit; font-size: var(--conversation-text);
+  line-height: var(--conversation-leading); font-weight: 400; letter-spacing: 0;
+  max-width: 34ch; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+}
+.ai-teacher .ai-topline .ai-breadcrumb button { color: var(--ai-muted); background: transparent; transition: color .15s; }
+.ai-teacher .ai-topline .ai-breadcrumb button:hover { color: var(--ai-text); }
+.ai-teacher .ai-topline .ai-breadcrumb h1 { color: var(--ai-text); font-weight: 500; max-width: 48ch; }
+.ai-teacher .ai-topline > .ai-header-context > p { margin-top: 4px; font-size: var(--conversation-caption); line-height: var(--conversation-caption-leading); font-weight: 400; }
+.ai-teacher .ai-topline { column-gap: 24px; row-gap: 12px; }
+.ai-teacher .ai-header-actions { gap: 8px; }
+
+/* Button, input and focus treatment follows the same compact component scale. */
+:is(.ai-teacher, .ai-test-page) .ds-button {
+  min-height: 36px; padding: 7px 12px; gap: 8px;
+  border-radius: var(--conversation-radius);
+  font-family: inherit; font-size: var(--conversation-text);
+  line-height: var(--conversation-leading); font-weight: 500; letter-spacing: 0;
+}
+:is(.ai-teacher, .ai-test-page) .ds-button--sm { min-height: 32px; padding: 5px 10px; }
+:is(.ai-teacher, .ai-test-page) .ds-button--secondary { border-color: var(--ai-line); box-shadow: var(--ds-shadow-sm); color: var(--ai-text); background: var(--ai-surface); }
+:is(.ai-teacher, .ai-test-page) .ds-button--secondary:hover { background: var(--ai-soft); }
+:is(.ai-teacher, .ai-test-page) .ds-button > svg { width: 16px; height: 16px; flex-shrink: 0; stroke-width: 1.75; }
+.ai-teacher .ai-delete-action { width: 36px; padding: 8px; }
+.ai-teacher .ai-delete-action:hover { background: color-mix(in srgb, var(--ds-danger) 8%, var(--ai-surface)); }
+:is(.ai-teacher, .ai-test-page) .ds-input {
+  min-height: 36px; padding: 7px 10px; border-color: var(--ai-line);
+  border-radius: var(--conversation-radius); box-shadow: var(--ds-shadow-sm);
+  font-family: inherit; font-size: var(--conversation-text); line-height: var(--conversation-leading); font-weight: 400;
+}
+:is(.ai-teacher, .ai-test-page) .ds-textarea { min-height: 96px; line-height: 1.5; }
+:is(.ai-teacher, .ai-test-page) .ds-field { gap: 8px; }
+:is(.ai-teacher, .ai-test-page) .ds-field__label { font-size: var(--conversation-text); line-height: var(--conversation-leading); font-weight: 500; }
+:is(.ai-teacher, .ai-test-page) :is(.ds-field__hint, .ds-field__error) { font-size: var(--conversation-caption); line-height: var(--conversation-caption-leading); }
+:is(.ai-teacher, .ai-test-page) :is(button, a, input, textarea, select):focus-visible { outline: 2px solid var(--ai-primary); outline-offset: 2px; box-shadow: none; }
+
+/* Tables: clear primary content, consistent metadata, restrained badges. */
+.ai-teacher :is(.ai-practice-table__header, .ai-student-table__header) { font-size: var(--conversation-caption); line-height: var(--conversation-caption-leading); font-weight: 500; background: var(--ai-soft); }
+.ai-teacher :is(.ai-practice-main strong, .ai-student-result-row strong) { font-size: var(--conversation-text); line-height: var(--conversation-leading); font-weight: 500; }
+.ai-teacher :is(.ai-practice-main small, .ai-practice-date, .ai-practice-students, .ai-progress-count, .ai-student-result-row small, .ai-attempt-row small) { font-size: var(--conversation-caption); line-height: var(--conversation-caption-leading); font-weight: 400; }
+.ai-teacher .ai-row-action { font-size: var(--conversation-text); line-height: var(--conversation-leading); font-weight: 500; }
+.ai-teacher .ai-row-action--muted { font-size: var(--conversation-caption); font-weight: 400; }
+:is(.ai-teacher, .ai-test-page) :is(.ai-status, .ds-badge) { min-height: 24px; padding: 3px 8px; border-radius: 6px; font-size: var(--conversation-caption); line-height: var(--conversation-caption-leading); font-weight: 500; }
+.ai-teacher .ai-student-initials { width: 32px; height: 32px; font-size: var(--conversation-caption); line-height: var(--conversation-caption-leading); font-weight: 500; }
+.ai-teacher .ai-attempt-row { font-size: var(--conversation-text); line-height: var(--conversation-leading); }
+
+/* Cards and forms: the same heading/body hierarchy across all stages. */
+.ai-teacher :is(.ai-form-card, .ai-review-card, .ai-review-aside, .ai-option-card, .ai-result-panel, .ai-transcript-panel) { border-color: var(--ai-line); border-radius: var(--conversation-radius); box-shadow: var(--ds-shadow-sm); }
+.ai-teacher :is(.ai-form-card, .ai-review-card) { padding: 24px; }
+.ai-teacher :is(.ai-form-card, .ai-review-card) > .ds-field { margin-top: 20px; }
+.ai-teacher :is(.ai-form-card, .ai-review-card) > .ds-field:first-child { margin-top: 0; }
+.ai-teacher .ai-form-footer { margin-top: 24px; padding-top: 20px; gap: 8px; }
+.ai-teacher .ai-form-two { gap: 16px; margin-top: 20px; }
+.ai-teacher .ai-student-picker { padding: 12px; margin-top: 20px; }
+.ai-teacher .ai-student-picker :is(label, legend) { font-size: var(--conversation-text); line-height: var(--conversation-leading); }
+.ai-teacher .ai-student-picker legend { font-weight: 500; }
+.ai-teacher .ai-student-picker input { width: 16px; height: 16px; }
+.ai-teacher .ai-option-card { padding: 24px; }
+.ai-teacher .ai-option-card strong { font-size: var(--conversation-heading); line-height: var(--conversation-heading-leading); font-weight: 600; }
+.ai-teacher .ai-option-card small { font-size: var(--conversation-text); line-height: var(--conversation-leading); }
+.ai-teacher .ai-option-link { font-size: var(--conversation-text); line-height: var(--conversation-leading); font-weight: 500; }
+.ai-teacher .ai-review-aside > strong { font-size: var(--conversation-text); line-height: var(--conversation-leading); font-weight: 600; }
+.ai-teacher .ai-review-aside :is(p, small) { font-size: var(--conversation-caption); line-height: 1.5; }
+.ai-teacher .ai-result-summary { gap: 16px; margin-bottom: 24px; }
+.ai-teacher .ai-result-summary article { border-radius: var(--conversation-radius); }
+.ai-teacher .ai-result-summary h3 { font-size: var(--conversation-text); line-height: var(--conversation-leading); font-weight: 600; margin: 16px 0 8px; }
+.ai-teacher .ai-result-summary p { font-size: var(--conversation-text); line-height: var(--conversation-leading); }
+.ai-teacher .ai-result-summary .ai-summary-next button { font-size: var(--conversation-text); line-height: var(--conversation-leading); font-weight: 500; }
+.ai-teacher :is(.ai-result-panel h3, .ai-transcript-head h3) { font-size: var(--conversation-heading); line-height: var(--conversation-heading-leading); font-weight: 600; margin-bottom: 8px; }
+.ai-teacher :is(.ai-result-panel > p, .ai-transcript-head p, .ai-transcript-turn p, .ai-result-callout p) { font-size: var(--conversation-text); line-height: 1.5; }
+.ai-teacher :is(.ai-metric-row span, .ai-transcript-turn > span, .ai-transcript-turn aside, .ai-feedback-bars strong) { font-size: var(--conversation-caption); line-height: var(--conversation-caption-leading); }
+.ai-teacher .ai-metric-row strong { font-size: var(--conversation-heading); line-height: var(--conversation-heading-leading); font-weight: 600; }
+.ai-teacher :is(.ai-feedback-bars > div, .ai-result-callout strong) { font-size: var(--conversation-text); line-height: var(--conversation-leading); }
+.ai-teacher .ai-result-callout strong { font-weight: 600; }
+.ai-teacher .ai-result-view .ds-tabs { display: inline-flex; max-width: 100%; gap: 4px; padding: 4px; border: 0; border-radius: var(--conversation-radius); background: color-mix(in srgb, var(--ai-text) 6%, var(--ai-surface)); overflow-x: auto; }
+.ai-teacher .ai-result-view .ds-tabs .ds-tab { min-height: 32px; padding: 6px 12px; border: 0; border-radius: 5px; background: transparent; color: var(--ai-muted); font-size: var(--conversation-text); line-height: var(--conversation-leading); font-weight: 500; box-shadow: none; }
+.ai-teacher .ai-result-view .ds-tabs .ds-tab.is-active { color: var(--ai-text); background: var(--ai-surface); box-shadow: var(--ds-shadow-sm); }
+.ai-teacher .ai-result-view .ds-tabs .ds-tab:hover:not(.is-active) { color: var(--ai-text); }
+.ai-teacher .ai-notice { font-size: var(--conversation-text); line-height: var(--conversation-leading); }
+:is(.ai-teacher, .ai-test-page) .ds-empty-state h3 { font-size: var(--conversation-heading); line-height: var(--conversation-heading-leading); font-weight: 600; }
+:is(.ai-teacher, .ai-test-page) .ds-empty-state p { font-size: var(--conversation-text); line-height: 1.5; }
+.ai-delete-dialog h2 { font-size: 18px; line-height: 28px; font-weight: 600; }
+.ai-delete-dialog p { font-size: var(--conversation-text); line-height: 1.5; }
+
+/* At-a-glance teacher KPIs; each card also filters the practice table. */
+.ai-dashboard-kpis { flex: 0 0 auto; display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 12px; padding: 16px 24px; border-bottom: 1px solid var(--ai-line); background: var(--ai-surface); }
+.ai-dashboard-kpi-scope { grid-column: 1 / -1; margin-bottom: -4px; color: var(--ai-muted); font-size: var(--conversation-caption); line-height: var(--conversation-caption-leading); font-weight: 500; }
+.ai-kpi-card { min-width: 0; min-height: 92px; display: flex; align-items: flex-start; gap: 12px; padding: 14px; border: 1px solid var(--ai-line); border-radius: var(--conversation-radius); color: var(--ai-text); background: var(--ai-surface); text-align: left; cursor: pointer; transition: border-color .15s, background .15s, box-shadow .15s; }
+.ai-kpi-card:hover { border-color: color-mix(in srgb, var(--kpi-tone) 38%, var(--ai-line)); background: color-mix(in srgb, var(--kpi-tone) 3%, var(--ai-surface)); }
+.ai-kpi-card.is-selected { border-color: color-mix(in srgb, var(--kpi-tone) 52%, var(--ai-line)); box-shadow: 0 0 0 2px color-mix(in srgb, var(--kpi-tone) 12%, transparent); }
+.ai-kpi-card--blue { --kpi-tone: #2563b8; }
+.ai-kpi-card--violet { --kpi-tone: #7541c8; }
+.ai-kpi-card--green { --kpi-tone: #087f72; }
+.ai-kpi-card--amber { --kpi-tone: #ae6808; }
+.ai-kpi-icon { width: 34px; height: 34px; display: grid; flex: 0 0 34px; place-items: center; border-radius: 9px; color: var(--kpi-tone); background: color-mix(in srgb, var(--kpi-tone) 10%, white); }
+.ai-kpi-copy { min-width: 0; display: grid; gap: 2px; }
+.ai-kpi-copy > span { overflow: hidden; color: var(--ai-muted); font-size: var(--conversation-caption); line-height: var(--conversation-caption-leading); text-overflow: ellipsis; white-space: nowrap; }
+.ai-kpi-copy > strong { color: var(--ai-text); font-size: 22px; line-height: 26px; font-weight: 600; font-variant-numeric: tabular-nums; }
+.ai-kpi-copy > strong small { color: var(--ai-muted); font-size: 14px; font-weight: 500; }
+.ai-kpi-copy > small { color: var(--ai-muted); font-size: 11px; line-height: 15px; }
+.ai-dashboard-filter-note { flex: 0 0 auto; display: flex; align-items: center; justify-content: space-between; gap: 12px; min-height: 36px; padding: 5px 24px; color: var(--ai-muted); background: var(--ai-soft); font-size: var(--conversation-caption); line-height: var(--conversation-caption-leading); }
+.ai-dashboard-filter-note button { display: inline-flex; align-items: center; gap: 4px; padding: 3px 0; border: 0; color: var(--ai-primary); background: transparent; font: inherit; font-weight: 500; cursor: pointer; }
+.ai-teacher .ai-status--in-progress { color: #2563b8; background: #eaf2fd; }
+
+/* The teacher test uses the same components and scale. */
+.ai-test-page .ai-test-header h1 { font-size: 24px; line-height: 32px; font-weight: 600; letter-spacing: -.02em; }
+.ai-test-page :is(.ai-test-header p, .ai-test-context dd, .ai-transcript-turn p, .ai-test-complete) { font-size: var(--conversation-text); line-height: 1.5; }
+.ai-test-page .ai-test-context h2 { font-size: var(--conversation-heading); line-height: var(--conversation-heading-leading); font-weight: 600; }
+.ai-test-page :is(.ai-test-context dt, .ai-test-context h3, .ai-test-toolbar strong) { font-size: var(--conversation-text); line-height: var(--conversation-leading); font-weight: 500; }
+.ai-test-page :is(.ai-test-header > div > span, .ai-test-toolbar > span, .ai-transcript-turn > span, .ai-expression) { font-size: var(--conversation-caption); line-height: var(--conversation-caption-leading); font-weight: 500; }
+.ai-test-page :is(.ai-test-context, .ai-test-conversation) { border-radius: var(--conversation-radius); box-shadow: var(--ds-shadow-sm); }
+@media(max-width:680px) {
+  .ai-teacher .ai-topline { gap: 12px; }
+  .ai-teacher .ai-header-actions { flex-wrap: wrap; }
+  .ai-teacher .ai-topline .ai-breadcrumb :is(button, h1) { max-width: 28ch; }
+  .ai-teacher :is(.ai-form-card, .ai-review-card) { padding: 20px; }
+  .ai-teacher .ai-result-summary { grid-template-columns: 1fr; }
+  .ai-dashboard-kpis { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px; padding: 12px 16px; }
+  .ai-kpi-card { min-height: 82px; gap: 8px; padding: 10px; }
+  .ai-kpi-copy > strong { font-size: 20px; line-height: 24px; }
+  .ai-dashboard-filter-note { padding-inline: 16px; }
+}
+@media(max-width:380px) { .ai-dashboard-kpis { grid-template-columns: 1fr; } }

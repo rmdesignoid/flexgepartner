@@ -1,0 +1,105 @@
+:root {
+  --ds-background: #f5f5f7;
+  --ds-surface: #ffffff;
+  --ds-surface-soft: #fbfbfd;
+  --ds-secondary: #f2f2f7;
+  --ds-border: #d2d2d7;
+  --ds-foreground: #1d1d1f;
+  --ds-muted: #6e6e73;
+  --ds-primary: #285d8d;
+  --ds-primary-hover: #214f78;
+  --ds-primary-soft: #eaf4fc;
+  --ds-accent: #753fe5;
+  --ds-accent-hover: #6a32db;
+  --ds-danger: #b42318;
+  --ds-success: #0f766e;
+  --ds-warning: #b45309;
+  --ds-status-slate: #64748b;
+  --ds-status-slate-soft: #f1f5f9;
+  --ds-status-amber: #b45309;
+  --ds-status-amber-soft: #fef3c7;
+  --ds-status-violet: #662dd1;
+  --ds-status-violet-soft: #f5f3ff;
+  --ds-status-teal: #0f766e;
+  --ds-status-teal-soft: #ccfbf1;
+  --ds-radius-sm: 6px;
+  --ds-radius-md: 10px;
+  --ds-radius-lg: 14px;
+  --ds-radius-xl: 18px;
+  --ds-radius-full: 9999px;
+  --ds-space-1: 4px;
+  --ds-space-2: 8px;
+  --ds-space-3: 12px;
+  --ds-space-4: 16px;
+  --ds-space-5: 20px;
+  --ds-space-6: 24px;
+  --ds-shadow-sm: 0 1px 2px rgba(15, 23, 42, .05);
+  --ds-shadow-md: 0 1px 3px rgba(15, 23, 42, .08), 0 6px 16px rgba(15, 23, 42, .06);
+  --ds-shadow-lg: 0 12px 28px rgba(15, 23, 42, .14), 0 2px 6px rgba(15, 23, 42, .08);
+  --ds-shadow-popover: 0 14px 32px rgba(15, 23, 42, .16), 0 2px 6px rgba(15, 23, 42, .07);
+  --ds-control-height: 32px;
+  --ds-focus-ring: 0 0 0 2px color-mix(in srgb, var(--ds-primary) 18%, transparent);
+  --ds-error-ring: 0 0 0 2px color-mix(in srgb, var(--ds-danger) 18%, transparent);
+  --ds-font-sans: "Inter", ui-sans-serif, system-ui, sans-serif;
+  --ds-font-size-xs: 0.75rem;
+  --ds-line-height-xs: 1rem;
+  --ds-font-size-sm: 0.875rem;
+  --ds-line-height-sm: 1.25rem;
+  --ds-font-size-base: 1rem;
+  --ds-line-height-base: 1.5rem;
+  --ds-font-size-lg: 1.125rem;
+  --ds-line-height-lg: 1.75rem;
+  --ds-font-size-xl: 1.25rem;
+  --ds-line-height-xl: 1.75rem;
+  --ds-font-size-2xl: 1.5rem;
+  --ds-line-height-2xl: 2rem;
+  --ds-font-size-3xl: 1.875rem;
+  --ds-line-height-3xl: 2.25rem;
+  --ds-font-size-4xl: 2.25rem;
+  --ds-line-height-4xl: 2.5rem;
+  --ds-line-height-none: 1;
+  --ds-font-weight-normal: 400;
+  --ds-font-weight-medium: 500;
+  --ds-font-weight-semibold: 600;
+  --ds-font-weight-bold: 700;
+}
+
+[data-theme="dark"] {
+  --ds-background: #181a20;
+  --ds-surface: #181a20;
+  --ds-surface-soft: #20232b;
+  --ds-secondary: #272b34;
+  --ds-border: #3a404b;
+  --ds-foreground: #f5f7fa;
+  --ds-muted: #a8b3c2;
+  --ds-primary: #4f86b5;
+  --ds-primary-hover: #6399c7;
+  --ds-primary-soft: #1d344a;
+  --ds-accent: #8b65ed;
+  --ds-accent-hover: #9d7bf2;
+  --ds-danger: #ff8b83;
+  --ds-success: #5fd2c2;
+  --ds-warning: #f5b84b;
+  --ds-status-slate: #a8b3c2;
+  --ds-status-slate-soft: #2b313b;
+  --ds-status-amber: #f5b84b;
+  --ds-status-amber-soft: #493719;
+  --ds-status-violet: #b29af5;
+  --ds-status-violet-soft: #302747;
+  --ds-status-teal: #5fd2c2;
+  --ds-status-teal-soft: #173d3c;
+  --ds-shadow-sm: 0 1px 2px rgba(0, 0, 0, .24);
+  --ds-shadow-md: 0 1px 3px rgba(0, 0, 0, .28), 0 8px 20px rgba(0, 0, 0, .18);
+  --ds-shadow-lg: 0 16px 36px rgba(0, 0, 0, .34), 0 2px 8px rgba(0, 0, 0, .24);
+  --ds-shadow-popover: 0 18px 40px rgba(0, 0, 0, .42), 0 2px 8px rgba(0, 0, 0, .28);
+}
+
+.ds-root {
+  color: var(--ds-foreground);
+  background: var(--ds-background);
+  font-family: var(--ds-font-sans);
+  font-size: var(--ds-font-size-sm); line-height: var(--ds-line-height-sm);
+}
+
+.ds-root *, .ds-root *::before, .ds-root *::after { box-sizing: border-box; }
+.ds-root button, .ds-root input, .ds-root select, .ds-root textarea { font: inherit; }

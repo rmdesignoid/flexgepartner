@@ -1,0 +1,12 @@
+<svg preserveAspectRatio="none" overflow="visible" style="display: block;" width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+<g id="Class Header Container" clip-path="url(#clip0_0_3)">
+<path id="Shape" d="M0 12C0 5.37259 5.37259 0 12 0C18.6274 0 24 5.37259 24 12C24 18.6274 18.6274 24 12 24C5.37259 24 0 18.6274 0 12Z" fill="#D2EAFF"/>
+<path id="Shape 2" d="M15.8889 17V15.8889C15.8889 15.2995 15.6547 14.7343 15.238 14.3175C14.8213 13.9008 14.256 13.6667 13.6667 13.6667H10.3333C9.74393 13.6667 9.17873 13.9008 8.76193 14.3175C8.3452 14.7343 8.11107 15.2995 8.11107 15.8889V17" stroke="#285D8D" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+<path id="Shape 3" d="M12 11.4445C13.2273 11.4445 14.2222 10.4495 14.2222 9.2222C14.2222 7.99493 13.2273 7 12 7C10.7727 7 9.77773 7.99493 9.77773 9.2222C9.77773 10.4495 10.7727 11.4445 12 11.4445Z" stroke="#285D8D" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+</g>
+<defs>
+<clipPath id="clip0_0_3">
+<rect width="24" height="24" fill="white"/>
+</clipPath>
+</defs>
+</svg>

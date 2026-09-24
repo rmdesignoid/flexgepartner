@@ -1,0 +1,20 @@
+.ai-student-app--preview { width: min(100%, 430px); height: 100dvh; min-height: 0; margin-inline: auto; display: flex; flex-direction: column; box-shadow: 0 0 0 1px #e2e7ee, 0 16px 56px #172a4212; }
+.ai-student-app--preview .ai-student-header { flex: 0 0 56px; display: grid; grid-template-columns: 36px minmax(0, 1fr); gap: 8px; padding-inline: 16px; }
+.ai-student-app--preview .ai-student-header--preview > a { width: 34px; height: 34px; display: grid; place-items: center; border-radius: 50%; color: #667385; font-size: 0; letter-spacing: 0; }
+.ai-student-app--preview .ai-student-header--preview > a:hover { background: #f0f3f7; }
+.ai-student-app--preview .ai-student-header--preview > span { min-width: 0; overflow: hidden; color: #293749; font-size: 14px; font-weight: 600; text-align: center; text-overflow: ellipsis; white-space: nowrap; }
+.ai-student-app--preview .ai-student-content { width: calc(100% - 24px); min-height: 0; flex: 1; display: flex; flex-direction: column; padding: 12px 0 16px; }
+.ai-student-app--preview .ai-student-back { margin-bottom: 10px; }
+.ai-student-app--preview .ai-student-prepare { padding: 16px; }
+.ai-student-app--preview .ai-student-prepare h1 { margin-block: 4px; font-size: 25px; line-height: 30px; }
+.ai-student-app--preview .ai-student-tags { margin: 8px 0 12px; }
+.ai-student-app--preview .ai-student-prepare section { padding: 10px 0; }
+.ai-student-app--preview .ai-expression-list { gap: 6px; }
+.ai-student-app--preview .ai-expression-list span { padding: 6px 8px; }
+.ai-student-app--preview .ai-kind-note { margin: 5px 0 10px; padding: 9px 10px; }
+.ai-student-app--preview .ai-student-prepare > .ds-button { min-height: 42px; }
+.ai-student-app--preview .ai-conversation-body { height: auto; min-height: 0; flex: 1; box-sizing: border-box; padding: 12px; }
+.ai-student-app--preview .ai-conversation-turns { min-height: 0; }
+.ai-student-app--preview .ai-conversation-controls { padding-top: 8px; }
+.ai-student-app--preview .ai-help-drawer { width: min(100%, 430px); }
+.ai-student-app--preview :is(.ai-drawer-backdrop, .ai-modal-backdrop) { width: min(100%, 430px); left: 50%; right: auto; transform: translateX(-50%); }

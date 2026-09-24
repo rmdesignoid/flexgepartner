@@ -1,0 +1,21 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "avatar-story",
+  "type": "registry:block",
+  "title": "Flexge Avatar Story",
+  "description": "Initials, photos and stacked avatars with overflow examples.",
+  "categories": [
+    "flexge",
+    "storybook",
+    "core",
+    "avatar"
+  ],
+  "files": [
+    {
+      "path": "src/design-system/avatar.stories.tsx",
+      "type": "registry:file",
+      "target": "@ui/avatar.stories.tsx",
+      "content": "import type { Meta, StoryObj } from \"@storybook/react-vite\";\nimport { Avatar, AvatarStack } from \".\";\n\nconst people = [\n  { name: \"Ana Martins\", src: \"/avatar-photo.png\" },\n  { name: \"Gabriel Santos\", src: \"/avatar-photo-gabriel.png\" },\n  { name: \"Mariana Costa\", src: \"/avatar-photo-mariana.png\" },\n  { name: \"Rafael Paz\" },\n  { name: \"Camila Rocha\" },\n]; \n\nconst meta = { title: \"Components/Core/Avatar\", component: Avatar, tags: [\"autodocs\"], parameters: { layout: \"centered\" }, argTypes: { size: { control: \"select\", options: [\"sm\", \"md\", \"lg\"] } } } satisfies Meta<typeof Avatar>;\nexport default meta;\ntype Story = StoryObj<typeof meta>;\n\nexport const Initials: Story = { args: { name: \"Ana Martins\", size: \"md\" } };\nexport const Photos: Story = { render: () => <div style={{ display: \"flex\", alignItems: \"center\", gap: 16 }}><Avatar {...people[0]} size=\"sm\" /><Avatar {...people[1]} size=\"md\" /><Avatar {...people[2]} size=\"lg\" /></div> };\nexport const Stacks: Story = { render: () => <div style={{ display: \"grid\", gap: 24 }}><div><p style={{ margin: \"0 0 8px\", color: \"var(--ds-muted)\" }}>Three people</p><AvatarStack items={people.slice(0, 3)} /></div><div><p style={{ margin: \"0 0 8px\", color: \"var(--ds-muted)\" }}>Overflow count</p><AvatarStack items={people} max={3} /></div><div><p style={{ margin: \"0 0 8px\", color: \"var(--ds-muted)\" }}>Large stack</p><AvatarStack items={people} max={4} size=\"lg\" /></div></div> };\n"
+    }
+  ]
+}

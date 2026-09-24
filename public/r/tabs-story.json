@@ -1,0 +1,21 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "tabs-story",
+  "type": "registry:block",
+  "title": "Flexge Tabs Story",
+  "description": "Class Planner tabs with active, alternate and disabled states.",
+  "categories": [
+    "flexge",
+    "storybook",
+    "core",
+    "tabs"
+  ],
+  "files": [
+    {
+      "path": "src/design-system/tabs.stories.tsx",
+      "type": "registry:file",
+      "target": "@ui/tabs.stories.tsx",
+      "content": "import { useState } from \"react\";\nimport { BookOpen, ClipboardList, FileText } from \"lucide-react\";\nimport type { Meta, StoryObj } from \"@storybook/react-vite\";\nimport { Tabs } from \".\";\n\nconst items = [{ value: \"overview\", label: \"Overview\" }, { value: \"details\", label: \"Details\" }, { value: \"activity\", label: \"Activity\" }];\nconst meta = { title: \"Components/Core/Tabs\", component: Tabs, tags: [\"autodocs\"], parameters: { layout: \"centered\" } } satisfies Meta<typeof Tabs>;\nexport default meta;\ntype Story = StoryObj<typeof meta>;\nfunction InteractiveTabs({ initial = \"overview\" }: { initial?: string }) { const [value, setValue] = useState(initial); return <Tabs value={value} onChange={setValue} items={items} />; }\nexport const Default: Story = { render: () => <InteractiveTabs /> };\nexport const SecondaryActive: Story = { render: () => <InteractiveTabs initial=\"details\" /> };\nexport const Disabled: Story = { render: () => <Tabs value=\"overview\" onChange={() => undefined} items={[...items.slice(0, 2), { value: \"activity\", label: \"Activity\", disabled: true }]} /> };\nexport const WithIcons: Story = { render: () => <InteractiveTabsWithIcons /> };\nfunction InteractiveTabsWithIcons() { const [value, setValue] = useState(\"overview\"); return <Tabs value={value} onChange={setValue} items={[{ value: \"overview\", label: \"Overview\", icon: <ClipboardList size={16} aria-hidden=\"true\" /> }, { value: \"details\", label: \"Details\", icon: <FileText size={16} aria-hidden=\"true\" /> }, { value: \"activity\", label: \"Activity\", icon: <BookOpen size={16} aria-hidden=\"true\" /> }]} />; }\n"
+    }
+  ]
+}

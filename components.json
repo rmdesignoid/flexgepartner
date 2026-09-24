@@ -1,0 +1,22 @@
+{
+  "$schema": "https://ui.shadcn.com/schema.json",
+  "style": "new-york",
+  "rsc": false,
+  "tsx": true,
+  "tailwind": {
+    "config": "",
+    "css": "src/design-system/styles.css",
+    "baseColor": "slate",
+    "cssVariables": true
+  },
+  "aliases": {
+    "components": "@/src/design-system",
+    "utils": "@/src/design-system/utils",
+    "ui": "@/src/design-system",
+    "lib": "@/src/design-system",
+    "hooks": "@/src/design-system"
+  },
+  "registries": {
+    "@flexge": "http://localhost:6006/r/{name}.json"
+  }
+}

@@ -1,0 +1,24 @@
+.ds-button {
+  min-height: 36px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 0 12px;
+  border: 1px solid transparent;
+  border-radius: 6px;
+  cursor: pointer;
+  font: 600 14px/20px system-ui, sans-serif;
+  white-space: nowrap;
+  transition: background .15s ease, border-color .15s ease, box-shadow .15s ease, color .15s ease;
+}
+.ds-button:focus-visible { outline: 0; box-shadow: 0 0 0 2px rgb(79 134 181 / 25%); }
+.ds-button:disabled { cursor: not-allowed; opacity: .6; }
+.ds-button--primary { color: #fff; background: #4f86b5; }
+.ds-button--primary:hover:not(:disabled) { background: #3f739f; }
+.ds-button--secondary { color: #1f2937; border-color: #d4d9e0; background: #fff; }
+.ds-button--secondary:hover:not(:disabled) { background: #f3f5f7; }
+.ds-button--ghost { color: #3f739f; background: transparent; }
+.ds-button--danger { color: #fff; background: #c75757; }
+.ds-button--sm { min-height: 28px; padding-inline: 10px; font-size: 12px; line-height: 16px; }
+.ds-button--lg { min-height: 40px; padding-inline: 16px; }
