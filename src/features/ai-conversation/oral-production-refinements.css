@@ -54,20 +54,33 @@
 .student-history-timeline__header{display:flex;align-items:end;justify-content:space-between;gap:15px;margin-bottom:7px}
 .student-history-timeline__header h3{margin:3px 0 0;color:#1c334a;font-size:16px;font-weight:650}
 .student-history-timeline__header>span{color:#718195;font-size:11px}
-.student-history-chart-wrap{width:100%;overflow-x:auto}
-.student-history-chart{width:100%;min-width:430px;height:auto;overflow:visible}
-.student-history-chart__grid{stroke:#e9eef3;stroke-width:1}
-.student-history-chart__axis{stroke:#cbd6df;stroke-width:1}
-.student-history-chart__axis-label,.student-history-chart__date{fill:#76879a;font-size:10px}
-.student-history-chart__line{fill:none;stroke:#2c9d79;stroke-width:3;stroke-linecap:round;stroke-linejoin:round}
-.student-history-chart__point{fill:#fff;stroke:#249675;stroke-width:3;cursor:pointer}
-.student-history-chart__point:focus{outline:none;stroke:#693de0;stroke-width:4}
-.student-history-chart__score{fill:#1f694f;font-size:11px;font-weight:700}
-.student-history-timeline__empty,.student-history-timeline__note{margin:10px 0 0;color:#75869a;font-size:12px;line-height:1.5}
-.student-history-timeline__deltas{display:flex;flex-wrap:wrap;gap:7px;margin-top:8px}
-.student-history-timeline__deltas span{padding:5px 8px;border-radius:99px;background:#f0f4f7;color:#64768a;font-size:10px}
-.student-history-timeline__deltas .is-up{background:#e7f5ee;color:#17805d}
-.student-history-timeline__deltas .is-down{background:#fff0ef;color:#ba4847}
+.student-history-timeline__legend{display:flex;flex-wrap:wrap;gap:14px;margin:12px 0;color:#718195;font-size:11px}
+.student-history-timeline__legend span{display:inline-flex;align-items:center;gap:6px}
+.student-history-timeline__legend i,.student-history-timeline__point{width:10px;height:10px;display:inline-block;border:2px solid #209a78;border-radius:50%;background:#fff}
+.student-history-timeline__legend i.is-pending,.student-history-timeline__event.is-pending .student-history-timeline__point{border-color:#b8c2ce;background:#f1f3f5}
+.student-history-timeline__scroll{overflow-x:auto;padding:4px 4px 12px}
+.student-history-timeline__track{position:relative;display:flex;min-width:max-content;margin:0;padding:0;list-style:none}
+.student-history-timeline__track::before{position:absolute;top:16px;right:110px;left:110px;height:2px;background:#dfe7ec;content:""}
+.student-history-timeline__event{position:relative;z-index:1;flex:0 0 220px;min-width:0;padding:0 10px}
+.student-history-timeline__event>a,.student-history-timeline__event-content{display:flex;flex-direction:column;align-items:stretch;color:inherit;text-decoration:none}
+.student-history-timeline__event>a:focus-visible{outline:2px solid #296b9b;outline-offset:3px;border-radius:9px}
+.student-history-timeline__date{height:14px;margin-bottom:8px;color:#718195;font-size:10px;text-align:center}
+.student-history-timeline__point{align-self:center;width:13px;height:13px;margin-bottom:9px;box-shadow:0 0 0 4px #fff}
+.student-history-timeline__event.is-pending .student-history-timeline__bubble{border-color:#e3e7eb;background:#f7f8f9;color:#8793a0}
+.student-history-timeline__bubble{display:grid;gap:8px;min-height:126px;padding:11px;border:1px solid #dce8e4;border-radius:9px;background:#f8fbfa}
+.student-history-timeline__bubble>strong{color:#23394f;font-size:12px;line-height:1.4}
+.student-history-timeline__status{color:#218260;font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:.04em}
+.student-history-timeline__event.is-pending .student-history-timeline__status{color:#8793a0}
+.student-history-timeline__metrics{display:grid;gap:4px;color:#718195;font-size:10px}
+.student-history-timeline__metrics>span{display:flex;justify-content:space-between;gap:8px}
+.student-history-timeline__metrics b{color:#29435a;font-size:10px;font-weight:650;text-align:right}
+.student-history-timeline__event.is-pending .student-history-timeline__metrics b{color:#929da8}
+.student-history-timeline__empty{margin:10px 0 0;color:#75869a;font-size:12px;line-height:1.5}
+.student-history-timeline__undated{margin-top:8px;padding-top:12px;border-top:1px solid #edf0f3}
+.student-history-timeline__undated h4{margin:0 0 10px;color:#718195;font-size:11px;font-weight:600}
+.student-history-timeline__undated>div{display:flex;flex-wrap:wrap;gap:10px}
+.student-history-timeline__undated .student-history-timeline__event{flex-basis:220px;padding:0}
+.student-history-timeline__undated .student-history-timeline__point{display:none}
 .student-history-open{text-decoration:none}
 @media(max-width:740px){.op-report-score-panel{align-items:flex-start;gap:9px}.op-report-comparisons{min-width:0;gap:6px}.op-report-comparison strong{font-size:11px}.op-report-comparison span{font-size:9px}.op-report-section-banner{grid-template-columns:40px minmax(0,1fr);gap:10px;padding:12px}.op-report-section-banner__icon{width:38px;height:38px}.op-report-section-banner h3{font-size:14px}.op-audience-indicator{grid-column:2;justify-self:start}.op-speaking-skills__layout{grid-template-columns:1fr}.op-speaking-skills__chart{border-top:1px solid #e7edf2;border-left:0;padding-top:10px}.op-speaking-skills__chart .ai-radar-chart{width:min(100%,330px)}.op-teacher-insights{grid-template-columns:1fr}}
-@media(max-width:560px){.op-report-score-panel{flex-direction:column;align-items:center;gap:8px}.op-report-comparisons{width:100%;max-width:150px}.op-report-identity__meta .op-profile-link{white-space:normal}.op-report-disclosure__content{padding-left:14px}.student-history-timeline{padding:14px}.student-history-timeline__header{align-items:flex-start;flex-direction:column;gap:4px}.student-history-chart{min-width:380px}.student-history-report{grid-template-columns:36px minmax(0,1fr) 54px}.student-history-open{grid-column:2/4}}
+@media(max-width:560px){.op-report-score-panel{flex-direction:column;align-items:center;gap:8px}.op-report-comparisons{width:100%;max-width:150px}.op-report-identity__meta .op-profile-link{white-space:normal}.op-report-disclosure__content{padding-left:14px}.student-history-timeline{padding:14px}.student-history-timeline__header{align-items:flex-start;flex-direction:column;gap:4px}.student-history-timeline__event{flex-basis:200px}.student-history-report{grid-template-columns:36px minmax(0,1fr) 54px}.student-history-open{grid-column:2/4}}

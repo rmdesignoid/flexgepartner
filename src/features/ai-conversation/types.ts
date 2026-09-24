@@ -51,6 +51,9 @@ export type Attempt = {
   evaluation?: {
     mode: "simulated";
     overall: number;
+    uniqueWordCount?: number;
+    errorCount?: number;
+    spokenCefrLevel?: string;
     dimensions: Array<{ label: string; score: number; evidence?: string }>;
     strengths: string[];
     growthAreas: string[];

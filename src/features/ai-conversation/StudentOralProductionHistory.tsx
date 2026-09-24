@@ -5,8 +5,8 @@ import Link from "next/link";
 import Image from "next/image";
 import { ArrowLeft, CalendarDays, ChevronRight, Clock3, ExternalLink, Mic2, UserRound } from "lucide-react";
 import { OralReport } from "./OralReport";
-import { INITIAL_STATE, readState, saveState, STORAGE_KEY, type Attempt, type ConversationState } from "./types";
-import { attemptScore, oralProductionHistory, type OralHistoryItem } from "./report-analytics";
+import { INITIAL_STATE, readState, saveState, STORAGE_KEY, type Attempt, type ConversationState, type Practice } from "./types";
+import { attemptScore, isOralProductionPractice, oralProductionHistory } from "./report-analytics";
 import "./oral-production-revision.css";
 import "./student-oral-history.css";
 import "./student-oral-history-breadcrumb.css";
@@ -77,7 +77,7 @@ export function StudentOralProductionHistory() {
     <section className="student-history-content" role="tabpanel" aria-label="Oral Production history">
       {selected ? <OralReport practice={selected.practice} submission={selected.attempt} state={state} onUpdate={updateAttempt} onReturn={() => setSelectedAttemptId(null)} /> : <>
         <div className="student-history-section-heading"><div><span className="student-history-eyebrow">Learning history</span><h2>Oral Production</h2></div><p>Completed speaking activities and feedback</p></div>
-        {history.length ? <PerformanceTimeline history={history} /> : null}
+        {loaded && student ? <PerformanceTimeline state={state} student={student} /> : null}
         {!loaded ? <div className="student-history-empty"><span className="student-history-spinner" aria-hidden="true" /><p>Loading student history…</p></div> : history.length ? <div className="student-history-list">{history.map(({ attempt, practice }) => {
           const date = new Date(attempt.completedAt);
           const formattedDate = Number.isNaN(date.getTime()) ? attempt.completedAt : date.toLocaleDateString("en-GB", { day: "2-digit", month: "short", year: "numeric" });
@@ -95,35 +95,62 @@ export function StudentOralProductionHistory() {
   </main>;
 }
 
-function PerformanceTimeline({ history }: { history: OralHistoryItem[] }) {
-  const scored = [...history].reverse().map((item) => ({ ...item, score: attemptScore(item.attempt) })).filter((item): item is OralHistoryItem & { score: number } => item.score !== null);
-  const chart = { left: 52, right: 738, top: 18, bottom: 188 };
-  const dates = scored.map((item) => Date.parse(item.attempt.completedAt)).filter(Number.isFinite);
-  const minDate = dates.length ? Math.min(...dates) : 0;
-  const maxDate = dates.length ? Math.max(...dates) : 0;
-  const points = scored.map((item, index) => {
-    const timestamp = Date.parse(item.attempt.completedAt);
-    const x = scored.length < 2 ? (chart.left + chart.right) / 2 : maxDate > minDate && Number.isFinite(timestamp)
-      ? chart.left + ((timestamp - minDate) / (maxDate - minDate)) * (chart.right - chart.left)
-      : chart.left + (index / (scored.length - 1)) * (chart.right - chart.left);
-    return { ...item, x, y: chart.bottom - (item.score / 100) * (chart.bottom - chart.top) };
+type TimelineEvent = { id: string; practice: Practice; attempt?: Attempt; timestamp: number | null; completed: boolean };
+
+function PerformanceTimeline({ state, student }: { state: ConversationState; student: string }) {
+  const normalizedStudent = student.trim().toLocaleLowerCase();
+  const reports = state.attempts.flatMap((attempt): TimelineEvent[] => {
+    const practice = state.practices.find((item) => item.id === attempt.practiceId);
+    if (!practice || !isOralProductionPractice(practice) || attempt.student.trim().toLocaleLowerCase() !== normalizedStudent) return [];
+    const timestamp = timelineTimestamp(attempt.completedAt);
+    return [{ id: attempt.id, practice, attempt, timestamp, completed: attempt.completed !== false }];
   });
-  const line = points.map((point) => `${point.x},${point.y}`).join(" ");
+  const attemptedPracticeIds = new Set(reports.map((item) => item.practice.id));
+  const assigned = state.practices.flatMap((practice): TimelineEvent[] => {
+    if (!isOralProductionPractice(practice) || practice.status !== "Published" || !practice.students.some((name) => name.trim().toLocaleLowerCase() === normalizedStudent) || attemptedPracticeIds.has(practice.id)) return [];
+    return [{ id: `assigned-${practice.id}`, practice, timestamp: timelineTimestamp(practice.dueDate), completed: false }];
+  });
+  const events = [...reports, ...assigned].sort((a, b) => {
+    if (a.timestamp === null) return b.timestamp === null ? a.practice.title.localeCompare(b.practice.title) : 1;
+    if (b.timestamp === null) return -1;
+    return a.timestamp - b.timestamp;
+  });
+  const datedEvents = events.filter((event) => event.timestamp !== null);
+  const undatedEvents = events.filter((event) => event.timestamp === null);
   return <section className="student-history-timeline" aria-labelledby="student-history-timeline-title">
-    <header className="student-history-timeline__header"><div><span className="student-history-eyebrow">Progress</span><h3 id="student-history-timeline-title">Performance over time</h3></div><span>{scored.length} scored {scored.length === 1 ? "activity" : "activities"}</span></header>
-    {!scored.length ? <div className="student-history-timeline__empty">No scored activities to plot yet. Scores will appear here as reports are evaluated.</div> : <>
-      <div className="student-history-chart-wrap"><svg className="student-history-chart" viewBox="0 0 760 228" role="img" aria-label={`Oral Production scores over time: ${points.map((point) => `${point.practice.title}, ${point.score} points`).join("; ")}`}>
-        {[0, 25, 50, 75, 100].map((value) => { const y = chart.bottom - (value / 100) * (chart.bottom - chart.top); return <g key={value}><line x1={chart.left} y1={y} x2={chart.right} y2={y} className="student-history-chart__grid" /><text x={chart.left - 12} y={y + 4} textAnchor="end" className="student-history-chart__axis-label">{value}</text></g>; })}
-        <line x1={chart.left} y1={chart.bottom} x2={chart.right} y2={chart.bottom} className="student-history-chart__axis" />
-        {points.length > 1 ? <polyline points={line} className="student-history-chart__line" /> : null}
-        {points.map((point, index) => {
-          const date = new Date(point.attempt.completedAt);
-          const dateLabel = Number.isNaN(date.getTime()) ? point.attempt.completedAt : date.toLocaleDateString("en-GB", { day: "2-digit", month: "short" });
-          const delta = index ? point.score - points[index - 1].score : null;
-          return <g key={point.attempt.id}><circle cx={point.x} cy={point.y} r="5" className="student-history-chart__point" tabIndex={0} role="img" aria-label={`${point.practice.title}: ${point.score} out of 100 on ${dateLabel}${delta === null ? "" : `, ${delta > 0 ? "+" : ""}${delta} points from previous scored activity`}`}><title>{point.practice.title} · {dateLabel} · {point.score}/100{delta === null ? "" : ` · ${delta > 0 ? "+" : ""}${delta} pts`}</title></circle><text x={point.x} y={point.y - 11} textAnchor="middle" className="student-history-chart__score">{point.score}</text><text x={point.x} y={chart.bottom + 23} textAnchor="middle" className="student-history-chart__date">{dateLabel}</text></g>;
-        })}
-      </svg></div>
-      {scored.length === 1 ? <p className="student-history-timeline__note">Only one scored activity so far; complete another activity to see a progress trend.</p> : <div className="student-history-timeline__deltas" aria-label="Score changes between scored activities">{points.slice(1).map((point, index) => { const delta = point.score - points[index].score; return <span key={point.attempt.id} className={delta > 0 ? "is-up" : delta < 0 ? "is-down" : "is-steady"}>{delta > 0 ? "↑" : delta < 0 ? "↓" : "→"} {delta > 0 ? "+" : ""}{delta} pts · {point.practice.title}</span>; })}</div>}
+    <header className="student-history-timeline__header"><div><span className="student-history-eyebrow">Learning timeline</span><h3 id="student-history-timeline-title">Oral Production activity</h3></div><span>{events.length} {events.length === 1 ? "activity" : "activities"}</span></header>
+    {!events.length ? <div className="student-history-timeline__empty">No assigned or completed Oral Production activities yet.</div> : <>
+      <p className="student-history-timeline__legend"><span><i className="is-complete" />Submitted report</span><span><i className="is-pending" />Not completed</span></p>
+      <div className="student-history-timeline__scroll"><ol className="student-history-timeline__track" aria-label="Oral Production activities in chronological order">{datedEvents.map((event) => <TimelineCard event={event} key={event.id} student={student} />)}</ol></div>
+      {undatedEvents.length ? <section className="student-history-timeline__undated" aria-label="Assigned activities without a scheduled date"><h4>Assigned · date not set</h4><div>{undatedEvents.map((event) => <TimelineCard event={event} key={event.id} student={student} />)}</div></section> : null}
     </>}
   </section>;
+}
+
+function TimelineCard({ event, student }: { event: TimelineEvent; student: string }) {
+  const dateLabel = event.timestamp === null ? "Date not set" : new Date(event.timestamp).toLocaleDateString("en-GB", { day: "2-digit", month: "short", year: "numeric" });
+  const attempt = event.attempt;
+  const completed = event.completed && !!attempt;
+  const transcriptWords = attempt?.transcript.filter((line) => line.speaker === "Student").flatMap((line) => line.text.toLocaleLowerCase().match(/[\p{L}\p{N}]+(?:['’][\p{L}\p{N}]+)*/gu) ?? []) ?? [];
+  const uniqueWords = attempt?.evaluation?.uniqueWordCount ?? (transcriptWords.length ? new Set(transcriptWords).size : null);
+  const reportUrl = completed && attempt ? `/students/oral-production?student=${encodeURIComponent(student)}&attemptId=${encodeURIComponent(attempt.id)}` : undefined;
+  const body = <>
+    <span className="student-history-timeline__date">{dateLabel}</span>
+    <span className="student-history-timeline__point" aria-hidden="true" />
+    <span className="student-history-timeline__bubble">
+      <span className="student-history-timeline__status">{completed ? "Submitted" : "Not completed"}</span>
+      <strong>{event.practice.title}</strong>
+      <span className="student-history-timeline__metrics"><span>Unique words <b>{completed ? uniqueWords ?? "Not analyzed" : "—"}</b></span><span>Errors <b>{completed ? attempt?.evaluation?.errorCount ?? "Not analyzed" : "—"}</b></span><span>Spoken CEFR <b>{completed ? attempt?.evaluation?.spokenCefrLevel ?? "Not analyzed" : "—"}</b></span></span>
+    </span>
+  </>;
+  return <li className={`student-history-timeline__event${completed ? " is-complete" : " is-pending"}`}>
+    {reportUrl ? <a href={reportUrl} target="_blank" rel="noopener noreferrer" aria-label={`View report for ${event.practice.title}, ${dateLabel}`}>{body}</a> : <div className="student-history-timeline__event-content">{body}</div>}
+  </li>;
+}
+
+function timelineTimestamp(value?: string): number | null {
+  if (!value) return null;
+  const normalized = /^\d{4}-\d{2}-\d{2}$/.test(value) ? `${value}T12:00:00` : value;
+  const timestamp = Date.parse(normalized);
+  return Number.isFinite(timestamp) ? timestamp : null;
 }
