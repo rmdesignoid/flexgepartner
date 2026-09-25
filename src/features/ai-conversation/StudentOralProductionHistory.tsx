@@ -3,16 +3,15 @@
 import { useEffect, useMemo, useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
-import { ArrowLeft, CalendarDays, ChevronRight, Clock3, ExternalLink, Mic2, UserRound } from "lucide-react";
+import { ArrowLeft, CalendarDays, Clock3, ExternalLink, Mic2, UserRound } from "lucide-react";
 import { OralReport } from "./OralReport";
 import { INITIAL_STATE, readState, saveState, STORAGE_KEY, type Attempt, type ConversationState, type Practice } from "./types";
 import { attemptScore, isOralProductionPractice, oralProductionHistory } from "./report-analytics";
 import "./oral-production-revision.css";
 import "./student-oral-history.css";
-import "./student-oral-history-breadcrumb.css";
 import "./oral-production-refinements.css";
 
-export function StudentOralProductionHistory() {
+export function StudentOralProductionHistory({ embedded = false }: { embedded?: boolean }) {
   const [student, setStudent] = useState("");
   const [email, setEmail] = useState("");
   const [fromStudents, setFromStudents] = useState(false);
@@ -41,6 +40,7 @@ export function StudentOralProductionHistory() {
 
   const selected = history.find(({ attempt }) => attempt.id === selectedAttemptId);
   const studentPhoto = student === "Anna Johnson" ? "/student-avatars/anna-johnson-demo.png" : undefined;
+  const PageContainer = embedded ? "div" : "main";
 
   function updateAttempt(updated: Attempt) {
     const next = { ...state, attempts: state.attempts.map((attempt) => attempt.id === updated.id ? updated : attempt) };
@@ -48,17 +48,11 @@ export function StudentOralProductionHistory() {
     saveState(next);
   }
 
-  return <main className="student-history-page">
-    <header className="student-history-topbar">
+  return <PageContainer className={`student-history-page${embedded ? " student-history-page--embedded" : ""}`}>
+    {embedded ? <header className="student-history-context"><nav aria-label="Breadcrumb"><Link href="/?module=students">Students</Link><ChevronRight size={14} aria-hidden="true" /><span>{student || "Student profile"}</span><ChevronRight size={14} aria-hidden="true" /><strong>Oral Production</strong></nav><span className="student-history-context__caption">Student profile and learning history</span></header> : <header className="student-history-topbar">
       <Link className="student-history-brand" href="/" aria-label="Flexge dashboard">flexge<span aria-hidden="true">◆</span></Link>
-      {fromStudents && student ? <nav className="student-history-breadcrumb" aria-label="Breadcrumb">
-        <Link href="/?module=students"><ArrowLeft size={16} /><span>Students</span></Link>
-        <ChevronRight size={15} aria-hidden="true" />
-        <span>{student}</span>
-        <ChevronRight size={15} aria-hidden="true" />
-        <span aria-current="page">Oral Production</span>
-      </nav> : <Link className="student-history-back" href="/"><ArrowLeft size={17} /><span>Dashboard</span></Link>}
-    </header>
+      {fromStudents && student ? <Link className="student-history-back" href="/?module=students"><ArrowLeft size={17} /><span>Students</span></Link> : <Link className="student-history-back" href="/"><ArrowLeft size={17} /><span>Dashboard</span></Link>}
+    </header>}
 
     <section className="student-history-profile" aria-labelledby="student-history-name">
       <div className="student-history-avatar" aria-hidden="true">{studentPhoto ? <Image src={studentPhoto} alt="" width={66} height={66} /> : student ? student.split(/\s+/).map((part) => part[0]).slice(0, 2).join("").toUpperCase() : <UserRound size={25} />}</div>
@@ -92,7 +86,7 @@ export function StudentOralProductionHistory() {
       </>}
     </section>
     <footer className="student-history-footer">Flexge · Student learning history</footer>
-  </main>;
+  </PageContainer>;
 }
 
 type TimelineEvent = { id: string; practice: Practice; attempt?: Attempt; timestamp: number | null; completed: boolean };
@@ -128,6 +122,7 @@ function TimelineCard({ event, student }: { event: TimelineEvent; student: strin
   const dateLabel = event.timestamp === null ? "Date not set" : new Date(event.timestamp).toLocaleDateString("en-GB", { day: "2-digit", month: "short", year: "numeric" });
   const attempt = event.attempt;
   const completed = event.completed && !!attempt;
+  const score = attempt ? attemptScore(attempt) : null;
   const transcriptWords = attempt?.transcript.filter((line) => line.speaker === "Student").flatMap((line) => line.text.toLocaleLowerCase().match(/[\p{L}\p{N}]+(?:['’][\p{L}\p{N}]+)*/gu) ?? []) ?? [];
   const uniqueWords = attempt?.evaluation?.uniqueWordCount ?? attempt?.demoMetrics?.uniqueWordCount ?? (transcriptWords.length ? new Set(transcriptWords).size : null);
   const errorCount = attempt?.evaluation?.errorCount ?? attempt?.demoMetrics?.errorCount;
@@ -139,7 +134,7 @@ function TimelineCard({ event, student }: { event: TimelineEvent; student: strin
     <span className="student-history-timeline__bubble">
       <span className="student-history-timeline__status">{completed ? "Submitted" : "Not completed"}</span>
       <strong>{event.practice.title}</strong>
-      <span className="student-history-timeline__metrics"><span>Unique words <b>{completed ? uniqueWords ?? "Not analyzed" : "—"}</b></span><span>Errors <b>{completed ? errorCount ?? "Not analyzed" : "—"}</b></span><span>Spoken CEFR <b>{completed ? spokenCefrLevel ?? "Not analyzed" : "—"}</b></span></span>
+      <span className="student-history-timeline__metrics"><span>Score <b>{completed ? score === null ? "Not scored" : `${score}/100` : "—"}</b></span><span>Unique words <b>{completed ? uniqueWords ?? "Not analyzed" : "—"}</b></span><span>Errors <b>{completed ? errorCount ?? "Not analyzed" : "—"}</b></span><span>Spoken CEFR <b>{completed ? spokenCefrLevel ?? "Not analyzed" : "—"}</b></span></span>
     </span>
   </>;
   return <li className={`student-history-timeline__event${completed ? " is-complete" : " is-pending"}`}>

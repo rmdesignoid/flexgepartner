@@ -83,6 +83,7 @@ import type { CSSProperties } from "react";
 import * as Popover from "@radix-ui/react-popover";
 import { TeacherHoursView } from "../src/features/teacher-hours/TeacherHoursView";
 import { AIConversationView } from "../src/features/ai-conversation/AIConversationView";
+import { StudentOralProductionHistory } from "../src/features/ai-conversation/StudentOralProductionHistory";
 
 type PlannerEvent = {
   id: string | number;
@@ -2112,7 +2113,18 @@ function ResourcesView() {
 
 function StudentsView() {
   const [query, setQuery] = useState("");
+  const [profileStudent, setProfileStudent] = useState<{ name: string; email: string } | null>(null);
   const students = useMemo(() => initialStudents.filter((student) => `${student.name} ${student.email}`.toLowerCase().includes(query.toLowerCase())), [query]);
+
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+    if (params.get("module") !== "students" || !params.get("student")) return;
+    setProfileStudent({ name: params.get("student")!.trim(), email: params.get("email")?.trim() ?? "" });
+  }, []);
+
+  if (profileStudent) return <StudentOralProductionHistory embedded key={`${profileStudent.name}:${profileStudent.email}`} />;
+
+  const profileUrl = (student: StudentRecord) => `/?module=students&student=${encodeURIComponent(student.name)}&email=${encodeURIComponent(student.email)}`;
 
   return (
     <section className="students-screen" aria-label="Students">
@@ -2133,11 +2145,11 @@ function StudentsView() {
           <tbody>
             {students.map((student) => (
               <tr key={student.id} className={student.status === "Disabled" ? "is-disabled" : ""}>
-                <td><div className="student-cell"><StudentAvatar name={student.name} className={`student-avatar student-avatar--${student.id}`} /><div><div className="student-name-row"><a className="student-name-button" href={`/students/oral-production?student=${encodeURIComponent(student.name)}&email=${encodeURIComponent(student.email)}&from=students`}>{student.name}</a><span className={`student-status student-status--${student.status.toLowerCase()}`}>{student.status}</span></div><small>{student.email}</small></div></div></td>
+                <td><div className="student-cell"><StudentAvatar name={student.name} className={`student-avatar student-avatar--${student.id}`} /><div><div className="student-name-row"><a className="student-name-button" href={profileUrl(student)}>{student.name}</a><span className={`student-status student-status--${student.status.toLowerCase()}`}>{student.status}</span></div><small>{student.email}</small></div></div></td>
                 <td><span className="course-badge">{student.level}</span></td>
                 <td>{student.oralProductionReports ? `${student.oralProductionReports} completed` : "No reports"}</td>
                 <td className="last-seen">{student.lastOralProductionActivity ?? "—"}</td>
-                <td><a className="outline-button student-profile-action" href={`/students/oral-production?student=${encodeURIComponent(student.name)}&email=${encodeURIComponent(student.email)}&from=students`}>View profile<ChevronRight size={14} /></a></td>
+                <td><a className="outline-button student-profile-action" href={profileUrl(student)}>View profile<ChevronRight size={14} /></a></td>
               </tr>
             ))}
           </tbody>
@@ -2671,7 +2683,7 @@ export default function Home() {
 
   function eventPayload(event: PlannerEvent) {
     return {
-      id: String(event.id), title: event.title, eventType: event.kind ?? "group", scheduledDate: event.scheduledDate ?? "2026-09-02",
+      id: String(event.id), title: event.title, eventType: event.kind ?? "group", scheduledDate: event.scheduledDate ?? isoDate(addDays(startOfWeek(today), event.weekOffset * 7 + event.day)),
       startMinutes: event.startMinutes, duration: event.duration, color: event.color, planningStatus: event.status,
       classStatus: event.classStatus ?? null, studentName: event.studentName ?? null, groupName: event.groupName ?? null,
       description: event.description ?? null, observation: event.observation ?? null, classPlanId: event.classPlanId ?? null, studentEmails: event.studentEmails ?? [], teacherNames: event.teacherNames ?? [], recurrence: event.recurrence ?? {}, updatedAt: event.updatedAt,
@@ -2867,7 +2879,38 @@ export default function Home() {
         const response = await fetch("/api/events");
         if (!response.ok) throw new Error("Unable to load calendar events");
         const data = await response.json() as { events?: ReturnType<typeof eventPayload>[] };
-        if (active && data.events) setPlannerEvents(data.events.map(plannerEventFromPayload));
+        if (!active || !data.events) return;
+
+        const seedKey = "flexge-planner-demo-events-v1";
+        let savedEvents = data.events;
+        let examplesAlreadyChecked = false;
+        try { examplesAlreadyChecked = window.localStorage.getItem(seedKey) === "true"; } catch { /* Storage can be disabled; deterministic seed IDs still prevent duplicates. */ }
+        if (!examplesAlreadyChecked) {
+          const existingIds = new Set(savedEvents.map((event) => String(event.id)));
+          const weekStart = startOfWeek(today);
+          const missingExamples = initialEvents.filter((event) =>
+            !existingIds.has(`seed-${event.id}`) && !existingIds.has(String(event.id)),
+          );
+          const seedResults = await Promise.all(missingExamples.map((event) => fetch("/api/events", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(eventPayload({
+              ...event,
+              id: `seed-${event.id}`,
+              scheduledDate: isoDate(addDays(weekStart, event.weekOffset * 7 + event.day)),
+              updatedAt: new Date().toISOString(),
+            })),
+          })));
+          if (seedResults.every((result) => result.ok)) {
+            const refreshed = await fetch("/api/events");
+            if (refreshed.ok) {
+              const refreshedData = await refreshed.json() as { events?: ReturnType<typeof eventPayload>[] };
+              if (refreshedData.events) savedEvents = refreshedData.events;
+            }
+            try { window.localStorage.setItem(seedKey, "true"); } catch { /* The server-side IDs remain the source of truth. */ }
+          }
+        }
+        if (active) setPlannerEvents(savedEvents.map(plannerEventFromPayload));
       } catch { if (active) setPlannerEvents([]); }
     }
     void loadEvents();

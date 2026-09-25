@@ -76,12 +76,13 @@ export async function POST(request: Request) {
     const event = validEvent(await request.json());
     if (!event) return Response.json({ error: "Invalid event payload" }, { status: 400 });
     const db = getD1();
+    const insertVerb = /^seed-\d+$/.test(event.id) ? "INSERT OR IGNORE" : "INSERT";
     try {
-      await db.prepare(`INSERT INTO calendar_events (${columns}) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`)
+      await db.prepare(`${insertVerb} INTO calendar_events (${columns}) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`)
         .bind(event.id, event.title, event.eventType, event.scheduledDate, event.startMinutes, event.duration, event.color, event.planningStatus, event.classStatus, event.studentName, event.groupName, event.description, event.observation, event.classPlanId, JSON.stringify(event.studentEmails), JSON.stringify(event.teacherNames), JSON.stringify(event.recurrence)).run();
     } catch (error) {
       if (!isMissingClassPlanColumn(error)) throw error;
-      await db.prepare(`INSERT INTO calendar_events (${legacyColumns}) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`)
+      await db.prepare(`${insertVerb} INTO calendar_events (${legacyColumns}) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`)
         .bind(event.id, event.title, event.eventType, event.scheduledDate, event.startMinutes, event.duration, event.color, event.planningStatus, event.classStatus, event.studentName, event.groupName, event.description, event.observation, JSON.stringify(event.studentEmails), JSON.stringify(event.teacherNames), JSON.stringify(event.recurrence)).run();
     }
     return Response.json({ event: { ...event, updatedAt: new Date().toISOString() } }, { status: 201 });

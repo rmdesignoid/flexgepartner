@@ -97,7 +97,7 @@ function RadarChart({ dimensions }: { dimensions: Dimension[] }) {
   return <svg className="ai-radar-chart" viewBox="0 0 360 290" role="img" aria-label={`Skills overview: ${dimensions.map((item) => `${item.label} ${item.score}`).join(", ")}`}>
     {[25, 50, 75, 100].map((score) => <polygon key={score} points={polygon(score)} fill="none" stroke="#dce8e4" />)}
     {dimensions.map((item, index) => { const p = point(index, 100); return <line key={item.label} x1={180} y1={145} x2={p.x} y2={p.y} stroke="#dce8e4" />; })}
-    <polygon points={dimensions.map((item, index) => { const p = point(index, item.score); return `${p.x},${p.y}`; }).join(" ")} fill="#6ac49d33" stroke="#57af8c" strokeWidth="2" />
+    <polygon className="ai-radar-chart__area" points={dimensions.map((item, index) => { const p = point(index, item.score); return `${p.x},${p.y}`; }).join(" ")} />
     {dimensions.map((item, index) => { const p = point(index, 135); return <text key={item.label} x={p.x} y={p.y} textAnchor="middle"><tspan x={p.x}>{item.label}</tspan><tspan x={p.x} dy={16}>{item.score}</tspan></text>; })}
   </svg>;
 }
