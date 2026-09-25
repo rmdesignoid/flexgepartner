@@ -3,7 +3,7 @@
 import { useEffect, useMemo, useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
-import { ArrowLeft, CalendarDays, Clock3, ExternalLink, Mic2, UserRound } from "lucide-react";
+import { ArrowLeft, CalendarDays, ChevronRight, Clock3, ExternalLink, Mic2, UserRound } from "lucide-react";
 import { OralReport } from "./OralReport";
 import { INITIAL_STATE, readState, saveState, STORAGE_KEY, type Attempt, type ConversationState, type Practice } from "./types";
 import { attemptScore, isOralProductionPractice, oralProductionHistory } from "./report-analytics";
@@ -11,9 +11,9 @@ import "./oral-production-revision.css";
 import "./student-oral-history.css";
 import "./oral-production-refinements.css";
 
-export function StudentOralProductionHistory({ embedded = false }: { embedded?: boolean }) {
-  const [student, setStudent] = useState("");
-  const [email, setEmail] = useState("");
+export function StudentOralProductionHistory({ embedded = false, studentName = "", studentEmail = "", onReturn }: { embedded?: boolean; studentName?: string; studentEmail?: string; onReturn?: () => void }) {
+  const [student, setStudent] = useState(studentName);
+  const [email, setEmail] = useState(studentEmail);
   const [fromStudents, setFromStudents] = useState(false);
   const [state, setState] = useState<ConversationState>(INITIAL_STATE);
   const [loaded, setLoaded] = useState(false);
@@ -23,8 +23,8 @@ export function StudentOralProductionHistory({ embedded = false }: { embedded?: 
     const params = new URLSearchParams(window.location.search);
     // This effect hydrates query parameters and persisted prototype data after the SSR pass.
     // eslint-disable-next-line react-hooks/set-state-in-effect
-    setStudent(params.get("student")?.trim() ?? "");
-    setEmail(params.get("email")?.trim() ?? "");
+    setStudent(studentName || params.get("student")?.trim() || "");
+    setEmail(studentEmail || params.get("email")?.trim() || "");
     setFromStudents(params.get("from") === "students");
     setSelectedAttemptId(params.get("attemptId"));
     setState(readState());
@@ -49,7 +49,7 @@ export function StudentOralProductionHistory({ embedded = false }: { embedded?: 
   }
 
   return <PageContainer className={`student-history-page${embedded ? " student-history-page--embedded" : ""}`}>
-    {embedded ? <header className="student-history-context"><nav aria-label="Breadcrumb"><Link href="/?module=students">Students</Link><ChevronRight size={14} aria-hidden="true" /><span>{student || "Student profile"}</span><ChevronRight size={14} aria-hidden="true" /><strong>Oral Production</strong></nav><span className="student-history-context__caption">Student profile and learning history</span></header> : <header className="student-history-topbar">
+    {embedded ? <header className="student-history-context"><nav aria-label="Breadcrumb">{onReturn ? <button type="button" onClick={onReturn}>Students</button> : <Link href="/?module=students">Students</Link>}<ChevronRight size={14} aria-hidden="true" /><span>{student || "Student profile"}</span><ChevronRight size={14} aria-hidden="true" /><strong>Oral Production</strong></nav><span className="student-history-context__caption">Student profile and learning history</span></header> : <header className="student-history-topbar">
       <Link className="student-history-brand" href="/" aria-label="Flexge dashboard">flexge<span aria-hidden="true">◆</span></Link>
       {fromStudents && student ? <Link className="student-history-back" href="/?module=students"><ArrowLeft size={17} /><span>Students</span></Link> : <Link className="student-history-back" href="/"><ArrowLeft size={17} /><span>Dashboard</span></Link>}
     </header>}

@@ -4,7 +4,9 @@
 .student-history-context{position:sticky;top:0;z-index:5;min-height:62px;display:flex;flex-direction:column;justify-content:center;gap:3px;margin:0 -24px 0;padding:8px 24px;background:var(--surface);border-bottom:1px solid var(--border)}
 .student-history-context nav{display:flex;align-items:center;gap:9px;color:var(--muted);font-size:13px}
 .student-history-context nav a{color:var(--primary);text-decoration:none}
+.student-history-context nav button{padding:0;border:0;background:transparent;color:var(--primary);font:inherit;cursor:pointer}
 .student-history-context nav a:hover{text-decoration:underline}
+.student-history-context nav button:hover{text-decoration:underline}
 .student-history-context nav strong{color:var(--foreground);font-weight:600}
 .student-history-context__caption{color:var(--muted);font-size:11px}
 .student-history-page--embedded .student-history-profile{margin-top:24px}

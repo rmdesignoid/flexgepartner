@@ -2111,20 +2111,18 @@ function ResourcesView() {
   );
 }
 
-function StudentsView() {
+function StudentsView({ profileStudent, onOpenProfile, onReturn }: { profileStudent: { name: string; email: string } | null; onOpenProfile: (student: StudentRecord) => void; onReturn: () => void }) {
   const [query, setQuery] = useState("");
-  const [profileStudent, setProfileStudent] = useState<{ name: string; email: string } | null>(null);
   const students = useMemo(() => initialStudents.filter((student) => `${student.name} ${student.email}`.toLowerCase().includes(query.toLowerCase())), [query]);
 
-  useEffect(() => {
-    const params = new URLSearchParams(window.location.search);
-    if (params.get("module") !== "students" || !params.get("student")) return;
-    setProfileStudent({ name: params.get("student")!.trim(), email: params.get("email")?.trim() ?? "" });
-  }, []);
-
-  if (profileStudent) return <StudentOralProductionHistory embedded key={`${profileStudent.name}:${profileStudent.email}`} />;
+  if (profileStudent) return <StudentOralProductionHistory embedded studentName={profileStudent.name} studentEmail={profileStudent.email} onReturn={onReturn} key={`${profileStudent.name}:${profileStudent.email}`} />;
 
   const profileUrl = (student: StudentRecord) => `/?module=students&student=${encodeURIComponent(student.name)}&email=${encodeURIComponent(student.email)}`;
+  const openProfile = (event: MouseEvent<HTMLAnchorElement>, student: StudentRecord) => {
+    if (event.button !== 0 || event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) return;
+    event.preventDefault();
+    onOpenProfile(student);
+  };
 
   return (
     <section className="students-screen" aria-label="Students">
@@ -2145,11 +2143,11 @@ function StudentsView() {
           <tbody>
             {students.map((student) => (
               <tr key={student.id} className={student.status === "Disabled" ? "is-disabled" : ""}>
-                <td><div className="student-cell"><StudentAvatar name={student.name} className={`student-avatar student-avatar--${student.id}`} /><div><div className="student-name-row"><a className="student-name-button" href={profileUrl(student)}>{student.name}</a><span className={`student-status student-status--${student.status.toLowerCase()}`}>{student.status}</span></div><small>{student.email}</small></div></div></td>
+                <td><div className="student-cell"><StudentAvatar name={student.name} className={`student-avatar student-avatar--${student.id}`} /><div><div className="student-name-row"><a className="student-name-button" href={profileUrl(student)} onClick={(event) => openProfile(event, student)}>{student.name}</a><span className={`student-status student-status--${student.status.toLowerCase()}`}>{student.status}</span></div><small>{student.email}</small></div></div></td>
                 <td><span className="course-badge">{student.level}</span></td>
                 <td>{student.oralProductionReports ? `${student.oralProductionReports} completed` : "No reports"}</td>
                 <td className="last-seen">{student.lastOralProductionActivity ?? "—"}</td>
-                <td><a className="outline-button student-profile-action" href={profileUrl(student)}>View profile<ChevronRight size={14} /></a></td>
+                <td><a className="outline-button student-profile-action" href={profileUrl(student)} onClick={(event) => openProfile(event, student)}>View profile<ChevronRight size={14} /></a></td>
               </tr>
             ))}
           </tbody>
@@ -2581,6 +2579,7 @@ export default function Home() {
   const [sidebarCollapsed, setSidebarCollapsed] = useState(() => typeof window !== "undefined" && window.localStorage.getItem("planner-sidebar") === "collapsed");
   const [darkMode, setDarkMode] = useState(false);
   const [activeModule, setActiveModule] = useState<ModuleView>("planner");
+  const [profileStudent, setProfileStudent] = useState<{ name: string; email: string } | null>(null);
   const isFullEnglishPlanner = activeModule === "plannerFullEnglish";
   const [isSchedulingEvent, setIsSchedulingEvent] = useState(false);
   const [isSavingEvent, setIsSavingEvent] = useState(false);
@@ -2614,10 +2613,33 @@ export default function Home() {
   useEffect(() => () => { if (toastTimeoutRef.current) clearTimeout(toastTimeoutRef.current); }, []);
 
   useEffect(() => {
-    if (new URLSearchParams(window.location.search).get("module") !== "students") return;
-    const frame = requestAnimationFrame(() => setActiveModule("students"));
-    return () => cancelAnimationFrame(frame);
+    const syncStudentRoute = () => {
+      const params = new URLSearchParams(window.location.search);
+      if (params.get("module") !== "students") {
+        setProfileStudent(null);
+        return;
+      }
+      setActiveModule("students");
+      const name = params.get("student")?.trim();
+      setProfileStudent(name ? { name, email: params.get("email")?.trim() ?? "" } : null);
+    };
+    syncStudentRoute();
+    window.addEventListener("popstate", syncStudentRoute);
+    return () => window.removeEventListener("popstate", syncStudentRoute);
   }, []);
+
+  function openStudentProfile(student: StudentRecord) {
+    const params = new URLSearchParams({ module: "students", student: student.name, email: student.email });
+    window.history.pushState({}, "", `/?${params.toString()}`);
+    setActiveModule("students");
+    setProfileStudent({ name: student.name, email: student.email });
+  }
+
+  function returnToStudents() {
+    window.history.pushState({}, "", "/?module=students");
+    setActiveModule("students");
+    setProfileStudent(null);
+  }
 
   useEffect(() => {
     const frame = requestAnimationFrame(() => {
@@ -3000,6 +3022,10 @@ export default function Home() {
                           aria-label={label}
                           data-tooltip={label}
                           onClick={() => {
+                            if (label !== "Students" && activeModule === "students") {
+                              setProfileStudent(null);
+                              window.history.replaceState({}, "", "/");
+                            }
                             if (label === "Planner") {
                               setActiveModule("planner");
                               setSelectedEvent(null);
@@ -3027,6 +3053,8 @@ export default function Home() {
                             }
                             if (label === "Students") {
                               setActiveModule("students");
+                              setProfileStudent(null);
+                              window.history.replaceState({}, "", "/?module=students");
                               setSelectedEvent(null);
                               setPlanningSelection(null);
                             }
@@ -3093,7 +3121,7 @@ export default function Home() {
               onNavigateReport={(item) => setPlanningSelection({ event: item, date: reportingDate(item), source: "report" })}
               onBack={() => setPlanningSelection(null)}
             />
-          ) : activeModule === "aiConversation" ? <AIConversationView /> : activeModule === "classReporting" ? <ClassReportingView events={events} onOpenInPlanner={(event) => setPlanningSelection({ event, date: reportingDate(event), source: "report" })} /> : activeModule === "teacherHours" ? <TeacherHoursView /> : activeModule === "resources" ? <ResourcesView /> : activeModule === "resourcesV2" ? <ResourcesV2View /> : activeModule === "students" ? <StudentsView /> : activeModule === "studentApp" ? <StudentAppView /> : <>
+          ) : activeModule === "aiConversation" ? <AIConversationView /> : activeModule === "classReporting" ? <ClassReportingView events={events} onOpenInPlanner={(event) => setPlanningSelection({ event, date: reportingDate(event), source: "report" })} /> : activeModule === "teacherHours" ? <TeacherHoursView /> : activeModule === "resources" ? <ResourcesView /> : activeModule === "resourcesV2" ? <ResourcesV2View /> : activeModule === "students" ? <StudentsView profileStudent={profileStudent} onOpenProfile={openStudentProfile} onReturn={returnToStudents} /> : activeModule === "studentApp" ? <StudentAppView /> : <>
           <div className="calendar-toolbar">
             <div className="toolbar-left">
               <CalendarViewTabs value={calendarPresentation} onValueChange={changeCalendarPresentation} />

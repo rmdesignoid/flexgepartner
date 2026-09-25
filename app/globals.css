@@ -1801,6 +1801,20 @@ body.theme-dark {
 .students-table th:nth-child(2), .students-table td:nth-child(2) { left: 48px; box-shadow: 6px 0 8px -8px rgba(15, 23, 42, .35); }
 .students-table th:nth-child(1), .students-table th:nth-child(2) { background: var(--surface-soft); z-index: 2; }
 .students-table tbody tr:hover td:nth-child(1), .students-table tbody tr:hover td:nth-child(2) { background: var(--surface-soft); }
+.students-table--oral-history { min-width: 900px; table-layout: fixed; }
+.students-table--oral-history th:nth-child(1), .students-table--oral-history td:nth-child(1) { width: 35%; }
+.students-table--oral-history th:nth-child(2), .students-table--oral-history td:nth-child(2) { width: 12%; }
+.students-table--oral-history th:nth-child(3), .students-table--oral-history td:nth-child(3) { width: 20%; }
+.students-table--oral-history th:nth-child(4), .students-table--oral-history td:nth-child(4) { width: 19%; }
+.students-table--oral-history th:nth-child(5), .students-table--oral-history td:nth-child(5) { width: 14%; }
+.students-table--oral-history th:nth-child(1), .students-table--oral-history td:nth-child(1), .students-table--oral-history th:nth-child(2), .students-table--oral-history td:nth-child(2) { position: static; left: auto; box-shadow: none; }
+.students-table--oral-history th:nth-child(1), .students-table--oral-history th:nth-child(2) { z-index: auto; }
+.students-table--oral-history .student-cell { min-width: 0; }
+.students-table--oral-history .student-cell > div:last-child { min-width: 0; overflow: hidden; }
+.students-table--oral-history .student-name-row { min-width: 0; }
+.students-table--oral-history .student-name-button, .students-table--oral-history .student-cell small { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.students-table--oral-history .student-profile-action { white-space: nowrap; }
+@media (max-width: 1100px) { .students-table--oral-history { min-width: 900px; } }
 
 /* Shared field states: default, hover, focus, filled, disabled and invalid. */
 .resources-search { transition: border-color .15s ease, background .15s ease, box-shadow .15s ease, color .15s ease, opacity .15s ease; }
