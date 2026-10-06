@@ -11,9 +11,8 @@ import "./components.css";
 import "./oral-production-revision.css";
 import { ConversationBreadcrumb } from "./ConversationBreadcrumb";
 import { OralReport } from "./OralReport";
-import { StudentPerformance } from "./StudentPerformance";
 
-type Stage = "list" | "type" | "review" | "assign" | "details" | "result" | "performance";
+type Stage = "list" | "type" | "review" | "assign" | "details" | "result";
 const shortDate = (value?: string) => value ? new Date(`${value}T12:00:00`).toLocaleDateString("en-US", { month: "short", day: "numeric" }) : "No due date";
 const STUDENT_NAMES = ["Anna Johnson", "Lucas Martins", "Emily Chen", "Daniel Costa", "Sofia Almeida", "Noah Williams", "Beatriz Santos", "Oliver Brown", "Isabella Chen", "Mateus Oliveira", "Mia Garcia", "Ethan Davis", "Camila Rodrigues", "Liam Wilson", "Alice Pereira", "Benjamin Taylor", "Laura Fernandes", "James Anderson", "Valentina Silva", "Henry Thomas", "Mariana Souza", "Alexander Moore", "Chloe Martin", "Gabriel Lima", "Sophie White", "David Thompson", "Helena Ribeiro", "Michael Lee", "Julia Carvalho", "Sebastian Clark", "Clara Mendes", "Samuel Walker"];
 const STUDENT_DIRECTORY = STUDENT_NAMES.map((name, index) => ({
@@ -30,8 +29,6 @@ export function AIConversationView() {
   const [state, setState] = useState<ConversationState>(INITIAL_STATE);
   const [stage, setStage] = useState<Stage>("list");
   const [practiceId, setPracticeId] = useState("practice-restaurant");
-  const [reportAttemptId, setReportAttemptId] = useState<string | null>(null);
-  const [reportReturn, setReportReturn] = useState<"details" | "performance">("details");
   const [studentName, setStudentName] = useState("Anna Johnson");
   const [search, setSearch] = useState("");
   const [levelFilters, setLevelFilters] = useState<string[]>([]);
@@ -53,7 +50,7 @@ export function AIConversationView() {
   const hasContent = !!practice && !!(practice.title.trim() || (practice.activityInstructions ?? practice.goal).trim() || practice.imageDataUrl || practice.tags?.length || themeInput.trim() || practice.level !== "A2" || (practice.minResponseTime ?? 1) !== 1 || (practice.maxResponseTime ?? 2) !== 2 || practice.instantFeedback === false);
   const selectedPractice = state.practices.find((item) => item.id === practiceId) ?? state.practices[0];
   const selectedAttempts = state.attempts.filter((item) => item.practiceId === practiceId && item.student === studentName && item.completed !== false);
-  const selectedAttempt = selectedAttempts.find((item) => item.id === reportAttemptId) ?? selectedAttempts[0];
+  const selectedAttempt = selectedAttempts[0];
   const today = new Date().toLocaleDateString("en-CA");
   const assignedPractices = state.practices.filter((item) => item.students.length > 0);
   const assignmentCount = assignedPractices.reduce((total, item) => total + item.students.length, 0);
@@ -159,12 +156,11 @@ export function AIConversationView() {
     setDeleted(null); setNotice("Practice restored");
   }
 
-  const pageTitle = stage === "type" ? "Create a practice" : stage === "details" ? selectedPractice.title : (stage === "result" || stage === "performance") ? studentName : stage === "review" ? editingExisting ? "Edit practice" : "Create Oral Production" : stage === "assign" ? "Assign practice" : "AI Studio";
+  const pageTitle = stage === "type" ? "Create a practice" : stage === "details" ? selectedPractice.title : stage === "result" ? studentName : stage === "review" ? editingExisting ? "Edit practice" : "Create Oral Production" : stage === "assign" ? "Assign practice" : "AI Studio";
   const pageDescription = stage === "list"
     ? `${state.practices.length} practices · Create and manage guided speaking activities for your students.`
     : stage === "details"
       ? `${selectedPractice.level} · ${practiceStatus(selectedPractice)} · ${completedStudents(selectedPractice, state.attempts).size}/${selectedPractice.students.length} students completed · ${selectedPractice.dueDate ? `Due ${shortDate(selectedPractice.dueDate)}` : "No due date"}`
-      : stage === "performance" ? "Oral production history and speaking progress."
       : stage === "result"
         ? `${selectedPractice.level} · Completed ${selectedAttempt?.completedAt ?? ""} · ${selectedAttempt?.duration ?? ""}`
         : stage === "review" ? (editingExisting ? `${practice?.level} · Update this activity and its student instructions.` : "Set the activity context and the instructions students will follow.")
@@ -181,8 +177,7 @@ export function AIConversationView() {
       <div className="ai-header-context">
         <ConversationBreadcrumb current={pageTitle} items={[
           ...(stage !== "list" ? [{ label: "AI Studio", onNavigate: () => setStage("list") }] : []),
-          ...(["result", "performance"].includes(stage) ? [{ label: selectedPractice.title, onNavigate: () => setStage("details") }] : []),
-          ...(stage === "result" && reportReturn === "performance" ? [{ label: "Student performance", onNavigate: () => setStage("performance") }] : []),
+          ...(stage === "result" ? [{ label: selectedPractice.title, onNavigate: () => setStage("details") }] : []),
           ...(["review", "assign"].includes(stage) ? [{ label: editingExisting ? practice!.title : "New practice", onNavigate: () => editingExisting ? openPractice(practice!.id) : setStage("type") }] : []),
           ...(stage === "assign" && !editingExisting ? [{ label: "Practice setup", onNavigate: () => setStage("review") }] : []),
         ]} />
@@ -190,7 +185,6 @@ export function AIConversationView() {
       </div>
       <div className="ai-header-actions">
         {stage === "list" ? <Button onClick={() => setStage("type")}><Plus size={16} />Create practice</Button> : null}
-        {stage === "result" ? <Button variant="secondary" onClick={() => setStage("performance")}>View student performance</Button> : null}
         {showStudentPreview && selectedPractice.status === "Published" ? <a className="ds-button ds-button--secondary ds-button--md" href={trialUrl} target="_blank" rel="noreferrer" title="Preview this activity without changing student progress">Try as a student <ArrowUpRight size={15} /></a> : null}
         {showStudentPreview && selectedPractice.status === "Draft" ? <span title="Publish the activity to view it as a student."><Button variant="secondary" disabled>Try as a student</Button></span> : null}
         {stage === "details" ? <>
@@ -231,7 +225,7 @@ export function AIConversationView() {
       <FormField label="Activity title" required><Input value={practice.title} onChange={(event) => setPractice({ ...practice, title: event.target.value })} /></FormField>
       <FormField label="Instructions" required hint="Tell the student what to talk about in their recording."><Textarea value={practice.activityInstructions ?? practice.goal} onChange={(event) => setPractice({ ...practice, activityInstructions: event.target.value, goal: event.target.value })} placeholder="e.g. Describe your ideal weekend and explain why you would enjoy it." /></FormField>
       <FormField label="Activity image (optional)" hint="JPG, PNG or WebP. The image appears in the center of the student activity."><div className="ai-image-upload">{practice.imageDataUrl ? <div className="ai-image-upload__preview"><img src={practice.imageDataUrl} alt="Uploaded activity visual" /><button type="button" onClick={() => setPractice({ ...practice, imageDataUrl: undefined })} aria-label="Remove activity image"><XCircle size={18} /></button></div> : <label className="ai-image-upload__drop"><ImagePlus size={19} /><span>Add an image</span><input type="file" accept="image/png,image/jpeg,image/webp" onChange={async (event) => { const input = event.currentTarget; const file = input.files?.[0]; if (!file) return; try { const imageDataUrl = await optimizeActivityImage(file); setPractice((current) => current ? { ...current, imageDataUrl } : current); } catch (error) { setNotice(error instanceof Error ? error.message : "Could not load this image."); } input.value = ""; }} /></label>}</div></FormField>
-      <FormField label="CEFR level" required><Select value={practice.level} onChange={(event) => setPractice({ ...practice, level: event.target.value })}>{["A1", "A2", "B1", "B2", "C1", "C2"].map((level) => <option key={level}>{level}</option>)}</Select></FormField>
+      <fieldset className="op-level-select"><legend>CEFR level <span aria-hidden="true">*</span></legend><div className="op-level-select__options">{["A1", "A2", "B1", "B2", "C1", "C2"].map((level) => <label className="op-level-select__option" key={level}><input type="radio" name="practice-cefr-level" value={level} checked={practice.level === level} onChange={() => setPractice({ ...practice, level })} /><span>{level}</span></label>)}</div></fieldset>
       <fieldset className="op-time-range"><legend>Response time</legend><strong className="op-time-summary">{responseTime(practice)}</strong><div className="op-time-control-grid">
         <div className="op-time-choice" role="group" aria-label="Minimum response time"><span className="op-time-choice__label">Minimum time</span><div className="op-time-choice__options">{[1, 2, 3, 4, 5].map((minutes) => <button type="button" key={minutes} aria-label={`Minimum ${minutes} minutes`} aria-pressed={(practice.minResponseTime ?? 1) === minutes} onClick={() => setPractice({ ...practice, minResponseTime: minutes, maxResponseTime: Math.max(minutes, practice.maxResponseTime ?? 2) })}><span>{minutes}</span><small>min</small></button>)}</div></div>
         <div className="op-time-choice" role="group" aria-label="Maximum response time"><span className="op-time-choice__label">Maximum time</span><div className="op-time-choice__options">{[1, 2, 3, 4, 5].map((minutes) => <button type="button" key={minutes} aria-label={`Maximum ${minutes} minutes`} aria-pressed={(practice.maxResponseTime ?? 2) === minutes} onClick={() => setPractice({ ...practice, maxResponseTime: minutes, minResponseTime: Math.min(minutes, practice.minResponseTime ?? 1) })}><span>{minutes}</span><small>min</small></button>)}</div></div>
@@ -253,12 +247,10 @@ export function AIConversationView() {
     </div></section> : null}
 
     {stage === "details" ? <section className="ai-detail-view" aria-label="Assigned students">
-      <div className="ai-practice-list ai-student-table"><div className="ai-student-table__header" aria-hidden="true"><span>Student</span><span>Status</span><span>Completion date</span><span /></div>{(selectedPractice.students.length ? selectedPractice.students : []).map((student) => { const attempts = state.attempts.filter((item) => item.practiceId === selectedPractice.id && item.student === student); const attempt = attempts.find((item) => item.completed !== false) ?? attempts[0]; const completed = completedStudents(selectedPractice, state.attempts).has(student); const progress = completed ? "Completed" : "Not started"; return <div className="ai-student-result-row" key={student}><span className="ai-student-initials">{student.split(" ").map((part) => part[0]).join("")}</span><strong>{student}</strong><span className={`ai-status ai-status--${progress.toLowerCase().replaceAll(" ", "-")}`}>{progress}</span><small>{completed ? attempt?.completedAt ?? "—" : "—"}</small>{<button className="ai-row-action" type="button" onClick={() => { setPracticeId(selectedPractice.id); setStudentName(student); setReportAttemptId(null); setReportReturn("details"); setStage("performance"); }}>View student performance <ChevronRight size={15} /></button>}</div>; })}{!selectedPractice.students.length ? <EmptyState title={selectedPractice.status === "Draft" ? "Activity creation in progress" : "No students assigned"} description={selectedPractice.status === "Draft" ? "Your activity is still a draft. Finish editing it so it can be sent to students." : "Send this activity to students to start collecting responses."} action={<Button onClick={() => selectedPractice.status === "Draft" ? editPractice() : manageStudents(selectedPractice)}>{selectedPractice.status === "Draft" ? "Continue creating" : "Send to students"}</Button>} /> : null}</div>
+      <div className="ai-practice-list ai-student-table"><div className="ai-student-table__header" aria-hidden="true"><span>Student</span><span>Status</span><span>Completion date</span><span /></div>{(selectedPractice.students.length ? selectedPractice.students : []).map((student) => { const attempts = state.attempts.filter((item) => item.practiceId === selectedPractice.id && item.student === student); const attempt = attempts.find((item) => item.completed !== false) ?? attempts[0]; const completed = completedStudents(selectedPractice, state.attempts).has(student); const progress = completed ? "Completed" : "Not started"; return <div className="ai-student-result-row" key={student}><span className="ai-student-initials">{student.split(" ").map((part) => part[0]).join("")}</span><strong>{student}</strong><span className={`ai-status ai-status--${progress.toLowerCase().replaceAll(" ", "-")}`}>{progress}</span><small>{completed ? attempt?.completedAt ?? "—" : "—"}</small>{completed ? <button className="ai-row-action" type="button" onClick={() => { setPracticeId(selectedPractice.id); setStudentName(student); setStage("result"); }}>View result <ChevronRight size={15} /></button> : <span className="ai-row-action ai-row-action--muted">{attempt ? "No result yet" : "No result yet"}</span>}</div>; })}{!selectedPractice.students.length ? <EmptyState title={selectedPractice.status === "Draft" ? "Activity creation in progress" : "No students assigned"} description={selectedPractice.status === "Draft" ? "Your activity is still a draft. Finish editing it so it can be sent to students." : "Send this activity to students to start collecting responses."} action={<Button onClick={() => selectedPractice.status === "Draft" ? editPractice() : manageStudents(selectedPractice)}>{selectedPractice.status === "Draft" ? "Continue creating" : "Send to students"}</Button>} /> : null}</div>
     </section> : null}
 
-    {(stage === "performance" || (stage === "result" && reportReturn === "performance")) ? <div className="ai-performance-view" hidden={stage !== "performance"}><StudentPerformance active={stage === "performance"} state={state} student={studentName} onReturn={() => setStage("details")} onReport={(entry) => { setPracticeId(entry.practice.id); setReportAttemptId(entry.attempt.id); setReportReturn("performance"); setStage("result"); }} /></div> : null}
-
-    {stage === "result" && selectedAttempt ? <OralReport key={selectedAttempt.id} practice={selectedPractice} submission={selectedAttempt} onReturn={() => setStage(reportReturn)} onUpdate={(submission) => commit({ ...state, attempts: state.attempts.map((item) => item.id === submission.id ? submission : item) })} /> : null}
+    {stage === "result" && selectedAttempt ? <OralReport key={selectedAttempt.id} practice={selectedPractice} submission={selectedAttempt} state={state} onReturn={() => setStage("details")} onUpdate={(submission) => commit({ ...state, attempts: state.attempts.map((item) => item.id === submission.id ? submission : item) })} /> : null}
     {confirmation ? <ConfirmDialog title={confirmation.title} message={confirmation.message} onCancel={() => setConfirmation(null)} onConfirm={() => { confirmation.action(); setConfirmation(null); }} /> : null}
     {deleteOpen ? <DeletePracticeDialog title={selectedPractice.title} onCancel={() => setDeleteOpen(false)} onConfirm={deletePractice} /> : null}
   </div>
