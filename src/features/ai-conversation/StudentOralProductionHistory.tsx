@@ -5,8 +5,9 @@ import Link from "next/link";
 import Image from "next/image";
 import { ArrowLeft, CalendarDays, ChevronRight, Clock3, ExternalLink, Mic2, UserRound } from "lucide-react";
 import { OralReport } from "./OralReport";
-import { INITIAL_STATE, readState, saveState, STORAGE_KEY, type Attempt, type ConversationState, type Practice } from "./types";
-import { attemptScore, isOralProductionPractice, oralProductionHistory } from "./report-analytics";
+import { StudentPerformance } from "./StudentPerformance";
+import { INITIAL_STATE, readState, saveState, STORAGE_KEY, type Attempt, type ConversationState } from "./types";
+import { attemptScore, oralProductionHistory } from "./report-analytics";
 import "./oral-production-revision.css";
 import "./student-oral-history.css";
 import "./oral-production-refinements.css";
@@ -71,7 +72,7 @@ export function StudentOralProductionHistory({ embedded = false, studentName = "
     <section className="student-history-content" role="tabpanel" aria-label="Oral Production history">
       {selected ? <OralReport practice={selected.practice} submission={selected.attempt} state={state} onUpdate={updateAttempt} onReturn={() => setSelectedAttemptId(null)} /> : <>
         <div className="student-history-section-heading"><div><span className="student-history-eyebrow">Learning history</span><h2>Oral Production</h2></div><p>Completed speaking activities and feedback</p></div>
-        {loaded && student ? <PerformanceTimeline state={state} student={student} /> : null}
+        {loaded && student ? <StudentPerformance embedded state={state} student={student} onReport={(entry) => setSelectedAttemptId(entry.attempt.id)} onReturn={() => undefined} /> : null}
         {!loaded ? <div className="student-history-empty"><span className="student-history-spinner" aria-hidden="true" /><p>Loading student history…</p></div> : history.length ? <div className="student-history-list">{history.map(({ attempt, practice }) => {
           const date = new Date(attempt.completedAt);
           const formattedDate = Number.isNaN(date.getTime()) ? attempt.completedAt : date.toLocaleDateString("en-GB", { day: "2-digit", month: "short", year: "numeric" });
@@ -89,62 +90,3 @@ export function StudentOralProductionHistory({ embedded = false, studentName = "
   </PageContainer>;
 }
 
-type TimelineEvent = { id: string; practice: Practice; attempt?: Attempt; timestamp: number | null; completed: boolean };
-
-function PerformanceTimeline({ state, student }: { state: ConversationState; student: string }) {
-  const normalizedStudent = student.trim().toLocaleLowerCase();
-  const reports = state.attempts.flatMap((attempt): TimelineEvent[] => {
-    const practice = state.practices.find((item) => item.id === attempt.practiceId);
-    if (!practice || !isOralProductionPractice(practice) || attempt.student.trim().toLocaleLowerCase() !== normalizedStudent) return [];
-    const timestamp = timelineTimestamp(attempt.completedAt);
-    return [{ id: attempt.id, practice, attempt, timestamp, completed: attempt.completed !== false }];
-  });
-  const attemptedPracticeIds = new Set(reports.map((item) => item.practice.id));
-  const assigned = state.practices.flatMap((practice): TimelineEvent[] => {
-    if (!isOralProductionPractice(practice) || practice.status !== "Published" || !practice.students.some((name) => name.trim().toLocaleLowerCase() === normalizedStudent) || attemptedPracticeIds.has(practice.id)) return [];
-    return [{ id: `assigned-${practice.id}`, practice, timestamp: timelineTimestamp(practice.dueDate), completed: false }];
-  });
-  const events = [...reports, ...assigned].sort((a, b) => {
-    if (a.timestamp === null) return b.timestamp === null ? a.practice.title.localeCompare(b.practice.title) : 1;
-    if (b.timestamp === null) return -1;
-    return a.timestamp - b.timestamp;
-  });
-  return <section className="student-history-timeline" aria-labelledby="student-history-timeline-title">
-    <header className="student-history-timeline__header"><div><span className="student-history-eyebrow">Learning timeline</span><h3 id="student-history-timeline-title">Oral Production activity</h3></div><span>{events.length} {events.length === 1 ? "activity" : "activities"}</span></header>
-    {!events.length ? <div className="student-history-timeline__empty">No assigned or completed Oral Production activities yet.</div> : <>
-      <p className="student-history-timeline__legend"><span><i className="is-complete" />Submitted report</span><span><i className="is-pending" />Not completed</span></p>
-      <div className="student-history-timeline__scroll"><ol className="student-history-timeline__track" aria-label="Oral Production activities in chronological order, with activities without a date at the end">{events.map((event) => <TimelineCard event={event} key={event.id} student={student} />)}</ol></div>
-    </>}
-  </section>;
-}
-
-function TimelineCard({ event, student }: { event: TimelineEvent; student: string }) {
-  const dateLabel = event.timestamp === null ? "Date not set" : new Date(event.timestamp).toLocaleDateString("en-GB", { day: "2-digit", month: "short", year: "numeric" });
-  const attempt = event.attempt;
-  const completed = event.completed && !!attempt;
-  const score = attempt ? attemptScore(attempt) : null;
-  const transcriptWords = attempt?.transcript.filter((line) => line.speaker === "Student").flatMap((line) => line.text.toLocaleLowerCase().match(/[\p{L}\p{N}]+(?:['’][\p{L}\p{N}]+)*/gu) ?? []) ?? [];
-  const uniqueWords = attempt?.evaluation?.uniqueWordCount ?? attempt?.demoMetrics?.uniqueWordCount ?? (transcriptWords.length ? new Set(transcriptWords).size : null);
-  const errorCount = attempt?.evaluation?.errorCount ?? attempt?.demoMetrics?.errorCount;
-  const spokenCefrLevel = attempt?.evaluation?.spokenCefrLevel ?? attempt?.demoMetrics?.spokenCefrLevel;
-  const reportUrl = completed && attempt ? `/students/oral-production?student=${encodeURIComponent(student)}&attemptId=${encodeURIComponent(attempt.id)}` : undefined;
-  const body = <>
-    <span className="student-history-timeline__date">{dateLabel}</span>
-    <span className="student-history-timeline__point" aria-hidden="true" />
-    <span className="student-history-timeline__bubble">
-      <span className="student-history-timeline__status">{completed ? "Submitted" : "Not completed"}</span>
-      <strong>{event.practice.title}</strong>
-      <span className="student-history-timeline__metrics"><span>Score <b>{completed ? score === null ? "Not scored" : `${score}/100` : "—"}</b></span><span>Unique words <b>{completed ? uniqueWords ?? "Not analyzed" : "—"}</b></span><span>Errors <b>{completed ? errorCount ?? "Not analyzed" : "—"}</b></span><span>Spoken CEFR <b>{completed ? spokenCefrLevel ?? "Not analyzed" : "—"}</b></span></span>
-    </span>
-  </>;
-  return <li className={`student-history-timeline__event${completed ? " is-complete" : " is-pending"}`}>
-    {reportUrl ? <a href={reportUrl} target="_blank" rel="noopener noreferrer" aria-label={`View report for ${event.practice.title}, ${dateLabel}`}>{body}</a> : <div className="student-history-timeline__event-content">{body}</div>}
-  </li>;
-}
-
-function timelineTimestamp(value?: string): number | null {
-  if (!value) return null;
-  const normalized = /^\d{4}-\d{2}-\d{2}$/.test(value) ? `${value}T12:00:00` : value;
-  const timestamp = Date.parse(normalized);
-  return Number.isFinite(timestamp) ? timestamp : null;
-}

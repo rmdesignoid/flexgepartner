@@ -5,7 +5,7 @@ import test from 'node:test';
 import ts from 'typescript';
 import server from '../.vercel/output/functions/__server.func/index.mjs';
 
-for (const path of ['/', '/conversation/preview?practiceId=example-oral-restaurant-v1', '/student/ai-conversation']) {
+for (const path of ['/', '/conversation/preview?practiceId=example-oral-restaurant-v1', '/student/ai-conversation', '/students/oral-production?student=Anna%20Johnson']) {
   test(`Vercel function renders ${path}`, async () => {
     const response = await server.fetch(new Request(`https://example.test${path}`));
     assert.equal(response.status, 200);

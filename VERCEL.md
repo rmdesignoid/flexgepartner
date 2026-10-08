@@ -1,5 +1,10 @@
 # Vercel deployment
 
+Vercel is the official publishing destination for this project. Do not publish
+updates through ChatGPT Sites. The `.openai/hosting.json` manifest is legacy.
+Use the connected GitHub repository `rmdesignoid/flexgepartner` and its `main`
+branch for deployment. This premise was confirmed on 2026-10-08.
+
 The repository uses vinext, not the Next.js build command. `vercel.json` selects
 `npm run build:vercel`, which builds a Nitro Vercel function and the static assets
 in `.vercel/output`. The root directory in Vercel must be the repository root.
