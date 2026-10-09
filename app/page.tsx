@@ -3015,7 +3015,7 @@ export default function Home() {
                     id={`nav-group-${group.label.toLowerCase().replaceAll(" ", "-")}`}
                   >
                     <div className="nav-group__items-inner">
-                      {group.items.filter(([label]) => label !== "My Resources v2").map(([label, Icon]) => (
+                      {group.items.map(([label, Icon]) => (
                         <button
                           className={`nav-item ${label === "Planner" && activeModule === "planner" ? "is-active" : ""} ${label === "Planner FullEnglish" && activeModule === "plannerFullEnglish" ? "is-active" : ""} ${label === "Lesson Log" && activeModule === "classReporting" ? "is-active" : ""} ${label === "Teacher Hours" && activeModule === "teacherHours" ? "is-active" : ""} ${label === "My Resources" && activeModule === "resources" ? "is-active" : ""} ${label === "My Resources v2" && activeModule === "resourcesV2" ? "is-active" : ""} ${label === "Students" && activeModule === "students" ? "is-active" : ""} ${label === "Student App" && activeModule === "studentApp" ? "is-active" : ""} ${label === "AI Studio" && activeModule === "aiConversation" ? "is-active" : ""}`}
                           key={label}
