@@ -17,6 +17,8 @@ export type TeacherHoursSession = {
   /** Stable calendar event ID when the session is linked to the Full English Planner. */
   plannerEventId?: string | number;
   scheduledDate: string;
+  /** Learner roster when provided by the scheduling source. */
+  students?: Array<{ id: string; name: string }>;
   classOrGroup: { id: string; name: string };
   scheduled: {
     teacher: TeacherReference;
